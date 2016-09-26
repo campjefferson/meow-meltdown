@@ -16,7 +16,6 @@ export class Menu extends State {
     }
 
     public update(): void {
-        console.log(this.app.width)
     }
 
     public shutdown(): void {
