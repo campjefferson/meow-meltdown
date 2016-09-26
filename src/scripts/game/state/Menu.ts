@@ -11,8 +11,8 @@ export class Menu extends State {
     }
 
     public build(): void {
-        this.add.text(100, 100, 'KOODO', Fonts.STAG_SANS_BOLD, 50, 0xffffff);
-        const spr = new PIXI.Sprite()
+        const text1 = this.add.text(100, 100, 'KOODO', Fonts.STAG_SANS_BOLD, 50, 0xffffff);
+        const text2 = this.add.text(100, 200, 'KOODO', Fonts.STAG_SANS_BLACK, 50, 0xffffff);
     }
 
     public update(): void {
