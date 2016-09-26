@@ -1,0 +1,50 @@
+{
+  "name": "koodo-icecream-game",
+  "version": "0.0.1",
+  "description": "Muliplayer WebGL game for Koodo using PIXI.js and WebGL",
+  "main": "index.html",
+  "scripts": {
+    "test": "gulp",
+    "postinstall": "jspm install && typings install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://cjsapptime@bitbucket.org/cjsapptime/koodo-icecream-game.git"
+  },
+  "keywords": [
+    "2D",
+    "TypeScript",
+    "PIXI.js",
+    "static"
+  ],
+  "author": "anthony.sapp@campjefferon.com",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/cjsapptime/koodo-icecream-game#readme",
+  "devDependencies": {
+    "browser-sync": "^2.16.0",
+    "cssnano": "^3.7.5",
+    "glob": "^7.1.0",
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.0",
+    "gulp-jspm": "^0.5.13",
+    "gulp-less": "^3.1.0",
+    "gulp-postcss": "^6.2.0",
+    "gulp-sourcemaps": "^1.6.0",
+    "jspm": "^0.16.45",
+    "less-plugin-autoprefix": "^1.5.1",
+    "run-sequence": "^1.2.2"
+  },
+  "jspm": {
+    "dependencies": {
+      "bluebird": "npm:bluebird@^3.4.6"
+    },
+    "devDependencies": {
+      "ts": "github:frankwallis/plugin-typescript@^4.0.7",
+      "typescript": "npm:typescript@^1.8.10"
+    }
+  },
+  "dependencies": {
+    "gsap": "^1.19.0",
+    "pixi.js": "^4.0.2"
+  }
+}

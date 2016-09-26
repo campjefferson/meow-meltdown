@@ -1,0 +1,6 @@
+[submodule "src/scripts/lightning"]
+	path = src/scripts/lightning
+	url = https://github.com/campjefferson/lightning.git
+[submodule "src/scripts/bolt"]
+	path = src/scripts/bolt
+	url = https://github.com/campjefferson/bolt.git

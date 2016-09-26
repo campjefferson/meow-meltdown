@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "system"
+    },
+    "exclude": [
+        "typings/lib.d.ts",
+        "typings/lib",
+        "node_modules",
+        "jspm_packages"
+    ]
+}
