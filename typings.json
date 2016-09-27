@@ -1,7 +1,9 @@
 {
   "globalDependencies": {
     "greensock": "registry:dt/greensock#1.15.1+20160316155526",
-    "pixi.js": "registry:dt/pixi.js#3.0.9+20160825215559"
+    "pixi.js": "registry:dt/pixi.js#3.0.9+20160825215559",
+    "socket.io": "registry:dt/socket.io#1.4.4+20160909205835",
+    "socket.io-client": "registry:dt/socket.io-client#1.4.4+20160317120654"
   },
   "dependencies": {
     "bluebird": "registry:npm/bluebird#3.4.1+20160909132857"

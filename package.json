@@ -36,7 +36,9 @@
   },
   "jspm": {
     "dependencies": {
-      "bluebird": "npm:bluebird@^3.4.6"
+      "bluebird": "npm:bluebird@^3.4.6",
+      "socket.io": "npm:socket.io@^1.4.8",
+      "socket.io-client": "npm:socket.io-client@^1.4.8"
     },
     "devDependencies": {
       "ts": "github:frankwallis/plugin-typescript@^4.0.7",
@@ -44,7 +46,9 @@
     }
   },
   "dependencies": {
+    "express": "^4.14.0",
     "gsap": "^1.19.0",
-    "pixi.js": "^4.0.2"
+    "pixi.js": "^4.0.2",
+    "socket.io": "^1.4.8"
   }
 }
