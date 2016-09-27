@@ -66,6 +66,7 @@ io.on('connection', function (socket, options) {
     socket.on('controller_connect', function (data) {
         var gameId = data.gameId,
             game = games[gameId];
+
         if (game.players === 4) {
             return;
         }
@@ -86,5 +87,12 @@ io.on('connection', function (socket, options) {
             var playerNum = game.controllers.indexOf(socket);
             game.socket.emit('lick', { player: playerNum, percent: percent });
         });
-    })
+
+        socket.on('request_list', function(){
+            
+        });
+
+        socket.emit('controller_connected', { id: game.id });
+        socket.emit('games_list', { list: getGameList() });
+    });
 });
