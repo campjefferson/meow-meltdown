@@ -136,7 +136,7 @@ gulp.task('watch:game', function (done) {
 });
 
 gulp.task('watch:controller', function (done) {
-    gulp.watch(["./src/scripts/**/*.ts", "./src/scripts/*.ts"], ['scripts:game']);
+    gulp.watch(["./src/scripts/**/*.ts", "./src/scripts/*.ts"], ['scripts:controller']);
     gulp.watch("./src/less/*.less", ['css']);
     gulp.watch("./src/data/**/*.*", ['data']);
     gulp.watch("./src/img/static/*.*", ['images']);
