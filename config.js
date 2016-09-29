@@ -12,11 +12,20 @@ System.config({
   },
 
   packages: {
+    "common": {
+      "main": "common.ts",
+      "defaultExtension": "ts",
+      "meta": {
+        "*.ts": {
+          "loader": "ts"
+        }
+      }
+    },
     "game": {
       "main": "bootstrap-game.ts",
       "defaultExtension": "ts",
       "meta": {
-        "*.tsx": {
+        "*.ts": {
           "loader": "ts"
         }
       }
@@ -25,7 +34,7 @@ System.config({
       "main": "bootstrap-controller.ts",
       "defaultExtension": "ts",
       "meta": {
-        "*.tsx": {
+        "*.ts": {
           "loader": "ts"
         }
       }
@@ -55,6 +64,7 @@ System.config({
     "bolt": "src/scripts/bolt",
     "controller": "src/scripts/controller",
     "game": "src/scripts/game",
+    "common": "src/scripts/common",
     "lightning": "src/scripts/lightning",
     "socket.io": "npm:socket.io@1.4.8",
     "socket.io-client": "npm:socket.io-client@1.4.8",

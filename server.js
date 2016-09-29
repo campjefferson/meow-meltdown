@@ -8,9 +8,8 @@ var path = require("path"),
     games = {},
     controllers = {},
     sockets = [],
+    ids = require('./ids.json').ids,
     PORT = 4000;
-
-
 
 // app.use(function (req, res, next) {
 //     res.header('Access-Control-Allow-Origin', '*');
@@ -30,6 +29,7 @@ app.get('/controller', function (req, res) {
 
 server.listen(PORT, function () {
     console.log('Example app listening on port ' + PORT + '!');
+    console.log( server.address().address );
 });
 
 io.on('connection', function (socket, options) {
@@ -58,7 +58,6 @@ io.on('connection', function (socket, options) {
     });
 
     socket.on('controller_connect_to_game', function (data) {
-
         var gameId = data.id,
             game = games[gameId];
 
@@ -105,7 +104,7 @@ io.on('connection', function (socket, options) {
             }
             return;
         }
-        console.log('disconnect', socket.id, game)
+        console.log('disconnect', socket.id)
         delete games[game.id];
         sendGamesListToAllControllers();
     })
@@ -113,12 +112,16 @@ io.on('connection', function (socket, options) {
 
 
 //
+// function generateGameId() {
+//     var str = '';
+//     while (str.length < 3) {
+//         str += Math.floor(Math.random() * 10);
+//     }
+//     return str;
+// }
+
 function generateGameId() {
-    var str = '';
-    while (str.length < 3) {
-        str += Math.floor(Math.random() * 10);
-    }
-    return str;
+   return ids[Math.floor(Math.random() * ids.length)];
 }
 
 function getGame(socket) {

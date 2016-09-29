@@ -6,6 +6,7 @@ export class ApplicationModel extends Model {
     public hasCopy: boolean = false;
     public hasFlightData: boolean = false;
     public gameId:string;
+    public numPlayers:number =0;
 
     get name(): string {
         return ApplicationModel.MODEL_NAME;

@@ -1,9 +1,11 @@
 import {Animation} from 'lightning/utils';
 import {Animator, Time} from 'bolt/utils';
 import {Container, Sprite, MovieClip, TileSprite} from 'lightning/display';
-import {Resources} from '../utils';
 
-import {IceCream} from './IceCream';
+import {Resources} from 'common/utils';
+import {Ribbon} from 'common/ui';
+import {IceCream} from 'game/gameobjects/IceCream';
+
 
 export type CatColor = "pink" | "blue" | "green" | "orange";
 
@@ -18,13 +20,14 @@ export class Cat extends Container {
     public neckTop: Sprite;
     public neck: TileSprite;
     public iceCream: IceCream;
+    public ribbon: Ribbon;
 
+    public finished: boolean = false;
+    public canWin: boolean = true;
+    public lickEnabled: boolean = true;
 
-    protected lickEnabled = true;
     protected amountNeededForDrop: number = 100;
-
     protected debugPercent: number = 0;
-
     protected isDown: boolean = false;
 
     constructor(x: number = 0, y: number = 0, public color: CatColor) {
@@ -46,6 +49,9 @@ export class Cat extends Container {
 
         this.tongue = this.head.addChild(new MovieClip(143, 54, Animation.generateFrames('tongue_', 0, 3))) as MovieClip;
         this.head.pivot.set(92, 186);
+
+        this.eye = this.head.addChild(new Sprite(110, 63, atlasId, 'eye.png')) as Sprite;
+        this.eye.visible = false;
 
         this.base = this.addChild(new Sprite(5, this.neckTop.y + this.neckTop.height + Cat.DEFAULT_NECK_HEIGHT - 70, atlasId, this.color + '/' + 'base.png')) as Sprite;
     }
@@ -82,7 +88,7 @@ export class Cat extends Container {
     }
 
     public lick(lickpercent: number): void {
-        if (!this.lickEnabled) {
+        if (!this.lickEnabled || !this.canWin) {
             return;
         }
 
@@ -92,9 +98,10 @@ export class Cat extends Container {
 
         this.tongue.gotoAndStop(2);
         Animator.to(this.neck, time, { height: dist, ease: Sine.easeOut });
-        
+
         Time.wait(time - 0.1).then(() => {
             this.tongue.gotoAndStop(1);
+            this.eye.visible = true;
             Animator.to(this.head, 0.1, { rotation: -10 * (Math.PI / 180), ease: Sine.easeOut, yoyo: true, repeat: 1 });
             Time.wait(0.05).then(() => {
                 this.tongue.gotoAndStop(3);
@@ -103,6 +110,7 @@ export class Cat extends Container {
                 this.tongue.gotoAndStop(0);
                 Animator.to(this.neck, time * 0.6, { height: 1, ease: Sine.easeIn }).then(() => {
                     this.lickEnabled = true;
+                    this.eye.visible = false;
                 })
             });
         });
@@ -112,6 +120,12 @@ export class Cat extends Container {
         if (this.amountNeededForDrop <= 0) {
             this.iceCream.drop();
             this.amountNeededForDrop = Math.round(this.iceCream.remainingPieces / this.iceCream.totalPieces * 100);
+        }
+
+        if (this.iceCream.finished) {
+            Time.wait(0.2).then(() => {
+                this.finished = true;
+            });
         }
     }
 }

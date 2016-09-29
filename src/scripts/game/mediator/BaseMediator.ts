@@ -1,5 +1,5 @@
 import {Mediator, CopyModel} from 'bolt/mvc';
-import {ApplicationModel} from '../model/ApplicationModel';
+import {ApplicationModel} from 'game/model/ApplicationModel';
 
 export class BaseMediator extends Mediator {
     public static MEDIATOR_NAME: string = 'BaseMediator';

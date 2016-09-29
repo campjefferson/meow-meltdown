@@ -11,7 +11,8 @@ var gulp = require("gulp"),
     LessPluginAutoPrefix = require('less-plugin-autoprefix'),
     autoprefix = new LessPluginAutoPrefix({ browsers: ['last 2 versions'] }),
     // workflow variables
-    dev = false;
+    dev = false,
+    controller = false;
 
 // reload
 gulp.task('reload', function (done) {
@@ -119,8 +120,11 @@ gulp.task('spritesheets', function (done) {
 // browsersync / server
 gulp.task('browser-sync', function () {
     browserSync.init({
+        port: controller ? 5000 : 3000,
         server: {
-            baseDir: "./dist"
+            
+            baseDir: "./dist",
+            index: controller ? "controller.html" : "index.html"
         }
     });
 });
@@ -152,5 +156,6 @@ gulp.task('default', function (done) {
 
 gulp.task('controller:dev', function (done) {
     dev = true;
+    controller = true;
     return run(['scripts:controller', 'vendor', 'css', 'data', 'images', 'spritesheets', 'html', 'fonts'], 'browser-sync', 'watch:controller', done);
 });
