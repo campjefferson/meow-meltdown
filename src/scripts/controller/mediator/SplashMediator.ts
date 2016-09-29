@@ -6,33 +6,46 @@ import {Notifications} from '../utils';
 export class SplashMediator extends BaseMediator {
     public static MEDIATOR_NAME: string = 'SplashMediator';
 
-    public listNotificationInterests():string[]{
+    public listNotificationInterests(): string[] {
         return [
-            Notifications.RECEIVED_GAMES_LIST
+            Notifications.RECEIVED_GAMES_LIST,
+            Notifications.CONNECT_TO_GAME,
+            Notifications.CONNECTED_TO_GAME
         ]
     }
 
-    public handleNotification(note:INotification){
-        const name:string = note.getName();
-        const body:any = note.getBody();
-        
-        switch(name){
+    public handleNotification(note: INotification) {
+        const name: string = note.getName();
+        const body: any = note.getBody();
+
+        switch (name) {
             case Notifications.RECEIVED_GAMES_LIST:
-            console.log('received', body)
                 this.updateGamesList();
-            break;
+                break;
+            case Notifications.CONNECT_TO_GAME:
+                //
+                break;
+            case Notifications.CONNECTED_TO_GAME:
+                console.log('controller connected to game ', this.appModel.gameId, ' as player ', this.appModel.playerNum)
+                // send to next state?
+                break;
         }
     }
 
-    public requestGamesList():void{
+    public requestGamesList(): void {
         this.sendNotification(Notifications.REQUEST_GAMES_LIST);
     }
 
-    public updateGamesList():void{
+    public connectToGame(gameId: string): void {
+        console.log('attempting to connectto game ', gameId)
+        this.sendNotification(Notifications.CONNECT_TO_GAME, gameId);
+    }
+
+    public updateGamesList(): void {
         this.splash.refreshGamesList(this.appModel.gamesList);
     }
 
-    public getGamesList():string[]{
+    public getGamesList(): string[] {
         return this.appModel.gamesList;
     }
 

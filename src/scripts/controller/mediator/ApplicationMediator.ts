@@ -12,42 +12,56 @@ export class ApplicationMediator extends BaseMediator {
         this.socket.on('controller_connected', (event) => { this.handleSocketEvent('controller_connected', event) });
         this.socket.on('games_list', (event) => { this.handleSocketEvent('games_list', event) });
 
-        this.requestGamesList();
+        this.socket.emit('controller_connect');
     }
 
-    public listNotificationInterests():string[]{
+    public listNotificationInterests(): string[] {
         return [
             Notifications.REQUEST_GAMES_LIST,
-            Notifications.RECEIVED_GAMES_LIST
+            Notifications.RECEIVED_GAMES_LIST,
+            Notifications.CONNECT_TO_GAME,
+            Notifications.CONNECTED_TO_GAME
         ]
     }
 
-    public handleNotfication(note:INotification){
-        const name:string = note.getName();
-        const body:any = note.getBody();
-        
-        switch(name){
+    public handleNotification(note: INotification) {
+        const name: string = note.getName();
+        const body: any = note.getBody();
+
+        switch (name) {
             case Notifications.REQUEST_GAMES_LIST:
                 this.requestGamesList();
-            break;
+                break;
+            case Notifications.CONNECT_TO_GAME:
+                this.connectToGame(body);
+                break;
+            case Notifications.CONNECTED_TO_GAME:
+                break;
         }
     }
 
     protected handleSocketEvent(type: string, event: any): void {
-        console.log('handleSocketEvent', type,  event)
+        console.log('handleSocketEvent', type, event)
         switch (type) {
             case 'controller_connected':
-                this.appModel.gameId = event.id;
+                this.appModel.gameId = event.gameId;
+                this.appModel.playerNum = event.playerNum;
+                this.sendNotification(Notifications.CONNECTED_TO_GAME);
                 break;
-             case 'games_list':
+            case 'games_list':
                 this.appModel.gamesList = event.list;
                 this.sendNotification(Notifications.RECEIVED_GAMES_LIST, this.appModel.gamesList);
                 break;
         }
     }
 
-    public requestGamesList():void{
+    public requestGamesList(): void {
         this.socket.emit('request_games_list');
+    }
+
+    public connectToGame(gameId: string) {
+        console.log('socket emitting controller_connect_to_game', { id: gameId });
+        this.socket.emit('controller_connect_to_game', { id: gameId })
     }
 
     get name(): string {
