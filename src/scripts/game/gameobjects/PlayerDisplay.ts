@@ -26,13 +26,14 @@ export class PlayerDisplay extends Container {
         this.labelContainer = this.addChild(new Container(PlayerDisplay.LABEL_X, PlayerDisplay.LABEL_Y)) as Container;
 
         this.bg = this.labelContainer.addChild(new Sprite(2, 2, Resources.UI_SPRITESHEET.id, 'button_background.png')) as Sprite;
-        this.bg.anchor.set(0.5, 0.5);
+        this.bg.anchor.set(0.5, 0.5); 
 
         const gfx = this.labelContainer.addChild(new PIXI.Graphics()) as PIXI.Graphics;
         gfx.beginFill(Colours.getPrimary(this.color));
         gfx.drawRect(0, 0, 336, 75);
         gfx.endFill();
-        this.colorBg = this.addChild(new Sprite(0, 0, gfx.generateTexture(this.app.renderer, this.app.resolution))) as Sprite;
+
+        this.colorBg = this.labelContainer.addChild(new Sprite(0, 0, gfx.generateTexture(this.app.renderer, this.app.resolution))) as Sprite;
         this.colorBg.anchor.set(0.5, 0.5);
        
         this.labelContainer.removeChild(gfx);

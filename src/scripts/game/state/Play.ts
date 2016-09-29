@@ -34,7 +34,6 @@ export class Play extends State {
 
     public preload(): void {
         console.log('play preload')
-        this.app.asset.load(Resources.CAT_SPRITESHEET);
     }
 
     public build(): void {

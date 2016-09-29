@@ -13,6 +13,6 @@ export class KDGame extends PIXIApplication {
     protected addStates(): void {
         this.state.add(Splash, 'splash');
         this.state.add(Play, 'play');
-        this.state.start('play'); 
+        this.state.start('splash'); 
     }
 }
