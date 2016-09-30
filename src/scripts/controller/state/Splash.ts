@@ -1,14 +1,19 @@
 import {State, Text, Container} from 'lightning/display';
 import {Animation} from 'lightning/utils';
-import {SplashMediator} from '../mediator/SplashMediator';
+import {Animator, Time} from 'bolt/utils';
+import {SplashMediator} from 'controller/mediator/SplashMediator';
 
-import {Fonts, Resources} from '../utils';
+import {TextButton} from 'common/ui';
+import {Fonts, Resources} from 'common/utils';
 
 export class Splash extends State {
-    public splashText: Text;
-    protected mediator: SplashMediator;
+    private static COLOURS: ("pink" | "blue" | "green" | "orange")[] = ["pink", "blue", "green", "orange"];
 
+    public splashText: Text;
+    public splashText2: Text;
+    protected mediator: SplashMediator;
     private listContainer: Container = null;
+    private buttons: { [id: string]: TextButton } = {};
 
     public init(): void {
         console.log('splash init!');
@@ -17,11 +22,17 @@ export class Splash extends State {
 
     public preload(): void {
         console.log('splash preload')
-        //this.app.asset.load(Resources.CAT_SPRITESHEET);
+        this.app.asset.load(Resources.UI_SPRITESHEET);
     }
 
     public build(): void {
-        this.listContainer = this.add.container(this.app.width * 0.5, this.app.height * 0.5);
+        this.splashText = this.addChild(new Text(this.app.width * 0.5, 100, 'MEOW MELTDOWN', Fonts.STAG_SANS_BLACK, 32, 0xffffff)) as Text;
+        this.splashText.anchor.set(0.5, 0.5);
+
+        this.splashText2 = this.addChild(new Text(this.app.width * 0.5, 150, 'SELECT A GAME', Fonts.STAG_SANS_BLACK, 24, 0xffffff)) as Text;
+        this.splashText2.anchor.set(0.5, 0.5);
+
+        this.listContainer = this.add.container(this.app.width * 0.5, this.app.height * 0.25);
         this.refreshGamesList(this.mediator.getGamesList());
     }
 
@@ -29,54 +40,66 @@ export class Splash extends State {
         if (!this.listContainer || !gamesList) {
             return;
         }
-        console.log('refreshGames', gamesList);
         this.listContainer.removeChildren();
-
+        this.buttons = {};
         gamesList.forEach(this.addGameButton, this);
-        this.listContainer.pivot.set(this.listContainer.width / this.app.resolution, this.listContainer.height / this.app.resolution);
+    }
 
+    public showConnection(gameId: string, playerNum: number): void {
+        this.buttons[gameId].setColor(Splash.COLOURS[playerNum - 1]);
+
+        Time.wait(1).then(()=>{this.proceedToGame()});
+    }
+
+    public proceedToGame():void{
+        Animator.staggerTo([this.splashText, this.splashText2, this.listContainer], 0.5, {x:-500, ease:Back.easeIn}, 0.1).then(()=>{
+            this.app.state.to('play');
+        })
     }
 
     protected addGameButton(gameId: string): void {
-        const txt: Text = new Text(0, this.listContainer.children.length * 50, gameId, Fonts.STAG_SANS_BLACK, 36, 0);
-        txt.interactive = true;
-        txt.anchor.set(0.5, 0.5);
-        txt.on('mousedown', this.onButtonPress, this)
-            .on('mouseover', this.onButtonPress, this)
+        //const txt: Text = new Text(0, this.listContainer.children.length * 50, gameId, Fonts.STAG_SANS_BLACK, 36, 0);
+        const btn: TextButton = new TextButton(0, this.listContainer.children.length * 85, gameId, 'blue');
+        this.buttons[gameId] = btn;
+        btn.interactive = true;
+        btn.on('mousedown', this.onButtonPress, this)
             .on('touchstart', this.onButtonPress, this)
 
-        txt.on('mouseup', this.onButtonRelease, this)
+        btn.on('mouseup', this.onButtonRelease, this)
             .on('touchend', this.onButtonRelease, this)
 
-        txt.on('mouseupoutside', this.onButtonReleaseOutside, this)
+        btn.on('mouseupoutside', this.onButtonReleaseOutside, this)
             .on('touchendoutside', this.onButtonReleaseOutside, this)
-            .on('mouseout', this.onButtonReleaseOutside, this)
 
-        this.listContainer.addChild(txt);
+        this.listContainer.addChild(btn);
     }
 
     protected onButtonPress(e: Event): void {
-        const btn: any = e.target,
-            scale = e.type === 'mouseover' ? 1.05 : 1.1,
-            txt: Text = (btn as Text);
-
-        txt.style.fill = e.type === 'mouseover' ? 0x666666 : 0xcccccc;
-        TweenMax.to(txt.scale, 0.2, { x: scale, y: scale, ease: Sine.easeOut });
+        const target: any = e.target,
+            btn: TextButton = (target as TextButton);
+        if (!btn.enabled) {
+            return;
+        }
+        btn.down();
     }
 
     protected onButtonRelease(e: Event): void {
-        const btn: any = e.target,
-            txt: Text = (btn as Text);
-        txt.style.fill = 0x000000;
-        TweenMax.to(txt.scale, 0.1, { x: 1, y: 1, ease: Sine.easeIn });
-
-        this.mediator.connectToGame(txt.text);
+        const target: any = e.target,
+            btn: TextButton = (target as TextButton);
+        if (!btn.enabled) {
+            return;
+        }
+        btn.up(true);
+        this.mediator.connectToGame(btn.text);
     }
+
     protected onButtonReleaseOutside(e: Event): void {
-        const btn: any = e.target,
-            txt: Text = (btn as Text);
-        txt.style.fill = 0x000000;
-        TweenMax.to(txt.scale, 0.1, { x: 1, y: 1, ease: Sine.easeIn });
+        const target: any = e.target,
+            btn: TextButton = (target as TextButton);
+        if (!btn.enabled) {
+            return;
+        }
+        btn.up(false);
     }
 
     public update(): void {

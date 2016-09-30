@@ -1,7 +1,7 @@
 import {INotification} from 'bolt/interfaces';
 import {BaseMediator} from './BaseMediator';
-import {Splash} from '../state/Splash';
-import {Notifications} from '../utils';
+import {Splash} from 'controller/state/Splash';
+import {Notifications} from 'controller/utils';
 
 export class SplashMediator extends BaseMediator {
     public static MEDIATOR_NAME: string = 'SplashMediator';
@@ -27,7 +27,7 @@ export class SplashMediator extends BaseMediator {
                 break;
             case Notifications.CONNECTED_TO_GAME:
                 console.log('controller connected to game ', this.appModel.gameId, ' as player ', this.appModel.playerNum)
-                // send to next state?
+                this.splash.showConnection(this.appModel.gameId, this.appModel.playerNum);
                 break;
         }
     }

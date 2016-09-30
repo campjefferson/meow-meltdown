@@ -1,8 +1,10 @@
-import {ApplicationMediator} from './mediator/ApplicationMediator';
-import {ApplicationModel} from './model/ApplicationModel';
 import {PIXIApplication} from 'lightning/core';
 import {Time} from 'bolt/utils';
-import {Splash} from './state/Splash';
+
+import {ApplicationMediator} from 'controller/mediator/ApplicationMediator';
+import {ApplicationModel} from 'controller/model/ApplicationModel';
+import {Splash} from 'controller/state/Splash';
+import {Play} from 'controller/state/Play';
 
 export class KDController extends PIXIApplication {
     protected createMediator(): void {
@@ -12,6 +14,7 @@ export class KDController extends PIXIApplication {
 
     protected addStates(): void {
         this.state.add(Splash, 'splash');
+        this.state.add(Play, 'play');
         this.state.start('splash');
     }
 }

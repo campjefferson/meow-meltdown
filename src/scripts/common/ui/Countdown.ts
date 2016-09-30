@@ -38,6 +38,7 @@ export class Countdown extends Container {
 
         this.circle.scale.set(0, 0);
         this.alpha = 0;
+        this.visible = false;
     }
 
     public show(delay: number = 0): void {

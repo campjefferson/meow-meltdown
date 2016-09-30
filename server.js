@@ -146,9 +146,7 @@ function getGamesList() {
         availableGames = [];
     for (var gameId in games) {
         game = games[gameId];
-        if (game.players < 4) {
             availableGames.push(game.id);
-        }
     }
 
     return availableGames;

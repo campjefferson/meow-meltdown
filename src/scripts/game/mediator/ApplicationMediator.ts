@@ -11,8 +11,13 @@ export class ApplicationMediator extends BaseMediator {
 
     public onRegister(): void {
         this.socket = io.connect('http://localhost:4000');
+        // events to handle
         this.socket.on('game_connected', (event) => { this.handleSocketEvent('game_connected', event) });
         this.socket.on('player_connected', (event) => { this.handleSocketEvent('player_connected', event) });
+        this.socket.on('player_swipe', (event) => { this.handleSocketEvent('player_swipe', event) });
+        this.socket.on('start_game', (event) => { this.handleSocketEvent('start_game', event) });
+        
+        // connect game
         this.socket.emit('game_connect');
     }
 
@@ -26,9 +31,12 @@ export class ApplicationMediator extends BaseMediator {
             case 'player_connected':
                 this.appModel.numPlayers = event.player;
                 this.sendNotification(Notifications.PLAYER_CONNECTED, event.player);
-                Time.wait(1).then(()=>{
-                    this.kdApplication.state.to('play');
-                })
+                break;
+            case 'player_swipe':
+                this.sendNotification(Notifications.PLAYER_SWIPE, { playerNum: event.player, percent: event.percent });
+                break;
+            case 'start_game':
+                this.sendNotification(Notifications.START_GAME);
                 break;
         }
     }

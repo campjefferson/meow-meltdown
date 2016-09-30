@@ -1,18 +1,23 @@
 import {State, Text, Sprite} from 'lightning/display';
 import {Animation} from 'lightning/utils';
-import {Time} from 'bolt/utils';
+import {Time, Animator} from 'bolt/utils';
 
 import {Fonts, Resources, Colours} from 'common/utils';
 import {Ribbon, Countdown} from 'common/ui';
 import {Cat} from 'game/gameobjects/Cat';
+import {PlayMediator} from 'game/mediator/PlayMediator';
 
 export class Play extends State {
+    private static PLAYER_COLORS: ('pink' | 'blue' | 'green' | 'orange')[] = ['pink', 'blue', 'green', 'orange'];
+
     public player1: Cat;
     public player2: Cat;
     public player3: Cat;
     public player4: Cat;
     public players: Cat[];
+    public bgs: Sprite[];
     public numPlayers: number = 0;
+
 
     public player1Bg: Sprite;
     public player2Bg: Sprite;
@@ -26,10 +31,14 @@ export class Play extends State {
 
     public countdown: Countdown;
     public winner: number = 0;
-    public hasWinner:boolean = false;
+    public hasWinner: boolean = false;
+
+    private playerContainerSize: number;
+    private mediator: PlayMediator;
 
     public init(): void {
         console.log('play init!')
+        this.mediator = new PlayMediator(this);
     }
 
     public preload(): void {
@@ -37,33 +46,17 @@ export class Play extends State {
     }
 
     public build(): void {
+        this.numPlayers = this.mediator.numPlayers;
+        this.playerContainerSize = this.app.width * 0.5 / this.numPlayers;
         this.generateBackgrounds();
         this.addPlayers();
-        this.addRibbons();
-
-        this.player1.ribbon = this.player1Ribbon;
-        this.player2.ribbon = this.player2Ribbon;
-        this.player3.ribbon = this.player3Ribbon;
-        this.player4.ribbon = this.player4Ribbon;
-
-        // Time.wait(0.5).then(() => {
-        //     this.player1Ribbon.setPosition(1);
-        // })
-
-        // Time.wait(1).then(() => {
-        //     this.player2Ribbon.setPosition(2);
-        // })
-
-        // Time.wait(1.5).then(() => {
-        //     this.player3Ribbon.setPosition(3);
-        // })
-
-        // Time.wait(2).then(() => {
-        //     this.player4Ribbon.setPosition(4);
-        // });
-
         this.countdown = this.app.ui.addChild(new Countdown(0, 0, 'blue')) as Countdown;
 
+        Animator.staggerFrom(this.bgs, 0.6, { x: this.app.width, ease: Sine.easeOut, delay: 0.6 }, 0.2);
+        Animator.staggerFrom(this.players, 0.6, { y: this.app.height * 2, ease: Sine.easeOut, delay: 1.2 }, 0.2);
+    }
+
+    protected showCountdown() {
         this.countdown.show(1);
         Time.wait(2).then(() => {
             this.countdown.countdown().then(() => {
@@ -77,53 +70,36 @@ export class Play extends State {
     }
 
     public generateBackgrounds(): void {
+        const size = this.playerContainerSize * 2;
         const gfx = this.addChild(new PIXI.Graphics()) as PIXI.Graphics;
-        gfx.beginFill(Colours.getBackground('pink'));
-        gfx.drawRect(0, 0, Math.ceil(this.app.width * 0.25), this.app.height);
-        gfx.endFill();
+        this.bgs = [];
 
-        this.player1Bg = this.add.sprite(0, 0, gfx.generateTexture(this.app.renderer, this.app.resolution));
+        for (let i = 1; i < this.numPlayers + 1; i++) {
+            gfx.clear();
+            gfx.beginFill(Colours.getBackground(Play.PLAYER_COLORS[i - 1]));
+            gfx.drawRect(0, 0, this.app.width, this.app.height);
+            gfx.endFill();
+            this.bgs.push(this.add.sprite(size * (i - 1), 0, gfx.generateTexture(this.app.renderer, this.app.resolution)));
 
-        gfx.clear();
-        gfx.beginFill(Colours.getBackground('blue'));
-        gfx.drawRect(0, 0, Math.ceil(this.app.width * 0.25), this.app.height);
-        gfx.endFill();
-
-        this.player2Bg = this.add.sprite(this.player1Bg.width, 0, gfx.generateTexture(this.app.renderer, this.app.resolution));
-
-        gfx.clear();
-        gfx.beginFill(Colours.getBackground('green'));
-        gfx.drawRect(0, 0, Math.ceil(this.app.width * 0.25), this.app.height);
-        gfx.endFill();
-
-        this.player3Bg = this.add.sprite(this.player2Bg.x + this.player2Bg.width, 0, gfx.generateTexture(this.app.renderer, this.app.resolution));
-
-        gfx.clear();
-        gfx.beginFill(Colours.getBackground('orange'));
-        gfx.drawRect(0, 0, Math.ceil(this.app.width * 0.25), this.app.height);
-        gfx.endFill();
-
-        this.player4Bg = this.add.sprite(this.player3Bg.x + this.player3Bg.width, 0, gfx.generateTexture(this.app.renderer, this.app.resolution));
-
+        }
         this.removeChild(gfx);
         gfx.destroy();
     }
 
     public addPlayers(): void {
-        this.player1 = this.addChild(new Cat(this.app.width * 0.125, this.app.height + 5, 'pink')) as Cat;
-        this.player2 = this.addChild(new Cat(this.app.width * 0.375, this.app.height + 5, 'blue')) as Cat;
-        this.player3 = this.addChild(new Cat(this.app.width * 0.625, this.app.height + 5, 'green')) as Cat;
-        this.player4 = this.addChild(new Cat(this.app.width * 0.875, this.app.height + 5, 'orange')) as Cat;
+        this.players = [];
+        let xpos = 0;
 
-        this.players = [this.player1, this.player2, this.player3, this.player4];
-        this.numPlayers = this.players.length;
+        for (let i = 1; i < this.numPlayers + 1; i++) {
+            xpos += this.app.width * (this.playerContainerSize / this.app.width);
+            this.players.push(this.addChild(new Cat(xpos, this.app.height + 5, Play.PLAYER_COLORS[i - 1])) as Cat);
+            this.players[this.players.length - 1].ribbon = this.addChild(new Ribbon(xpos, 185, Play.PLAYER_COLORS[i - 1])) as Ribbon;
+            xpos += this.app.width * (this.playerContainerSize / this.app.width);
+        }
     }
 
-    public addRibbons(): void {
-        this.player1Ribbon = this.addChild(new Ribbon(this.app.width * 0.125, 185, 'pink')) as Ribbon;
-        this.player2Ribbon = this.addChild(new Ribbon(this.app.width * 0.375, 185, 'blue')) as Ribbon;
-        this.player3Ribbon = this.addChild(new Ribbon(this.app.width * 0.625, 185, 'green')) as Ribbon;
-        this.player4Ribbon = this.addChild(new Ribbon(this.app.width * 0.875, 185, 'orange')) as Ribbon;
+    public inputSwipe(playerNum: number, percent: number): void {
+        this.players[playerNum - 1].lick(percent);
     }
 
     public update(): void {
@@ -153,5 +129,6 @@ export class Play extends State {
     }
 
     public shutdown(): void {
+        this.mediator.destroy();
     }
 }

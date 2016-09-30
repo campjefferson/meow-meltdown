@@ -1,1 +1,1 @@
-export {Notifications} from './utils/Notifications';
+export {Notifications} from 'controller/utils/Notifications';

@@ -7,13 +7,15 @@ import {Notifications} from 'game/utils';
 export class SplashMediator extends BaseMediator {
     public static MEDIATOR_NAME: string = 'SplashMediator';
 
+    private connectionsEnabled: boolean = true;
+
     public onRegister(): void {
-        console.log('hi')
     }
     public listNotificationInterests(): string[] {
         return [
             Notifications.GAME_CONNECTED,
-            Notifications.PLAYER_CONNECTED
+            Notifications.PLAYER_CONNECTED,
+            Notifications.START_GAME
         ]
     }
 
@@ -26,7 +28,13 @@ export class SplashMediator extends BaseMediator {
                 this.updateGameId();
                 break;
             case Notifications.PLAYER_CONNECTED:
-                this.updatePlayers(body);
+                if (this.connectionsEnabled) {
+                    this.playerConnected(body);
+                }
+                break;
+            case Notifications.START_GAME:
+                this.connectionsEnabled = false;
+                this.splash.proceedToGame();
                 break;
         }
     }
@@ -35,8 +43,15 @@ export class SplashMediator extends BaseMediator {
         this.splash.setGameId(this.appModel.gameId);
     }
 
-    public updatePlayers(playerNum: number): void {
-        this.splash.setPlayers(playerNum);
+    public playerConnected(playerNum: number, debug: boolean = false): void {
+        if (debug) {
+            this.appModel.numPlayers = playerNum;
+        }
+        this.splash.playerConnected(playerNum);
+    }
+
+    get numPlayers() {
+        return this.appModel.numPlayers;
     }
 
     get name(): string {

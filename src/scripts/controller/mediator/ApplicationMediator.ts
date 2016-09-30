@@ -1,7 +1,7 @@
 import {INotification} from 'bolt/interfaces';
-import {BaseMediator} from './BaseMediator';
-import {KDController} from '../KDController';
-import {Notifications} from '../utils';
+import {BaseMediator} from 'controller/mediator/BaseMediator';
+import {KDController} from 'controller/KDController';
+import {Notifications} from 'controller/utils';
 
 export class ApplicationMediator extends BaseMediator {
     public static MEDIATOR_NAME: string = 'ApplicationMediator';
@@ -20,7 +20,8 @@ export class ApplicationMediator extends BaseMediator {
             Notifications.REQUEST_GAMES_LIST,
             Notifications.RECEIVED_GAMES_LIST,
             Notifications.CONNECT_TO_GAME,
-            Notifications.CONNECTED_TO_GAME
+            Notifications.CONNECTED_TO_GAME,
+            Notifications.PLAYER_SWIPE
         ]
     }
 
@@ -35,7 +36,8 @@ export class ApplicationMediator extends BaseMediator {
             case Notifications.CONNECT_TO_GAME:
                 this.connectToGame(body);
                 break;
-            case Notifications.CONNECTED_TO_GAME:
+            case Notifications.PLAYER_SWIPE:
+                this.sendSwipe(body);
                 break;
         }
     }
@@ -57,6 +59,10 @@ export class ApplicationMediator extends BaseMediator {
 
     public requestGamesList(): void {
         this.socket.emit('request_games_list');
+    }
+
+    public sendSwipe(percent:number): void {
+        this.socket.emit('player_swipe', {player:this.appModel.playerNum, percent:percent});
     }
 
     public connectToGame(gameId: string) {

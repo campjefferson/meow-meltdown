@@ -1,18 +1,22 @@
 import {State, Text, Sprite} from 'lightning/display';
 import {Animation} from 'lightning/utils';
+import {Animator, Time} from 'bolt/utils';
 
 import {Fonts, Resources, Colours} from 'common/utils';
 import {SplashMediator} from 'game/mediator/SplashMediator';
 import {PlayerDisplay} from 'game/gameobjects/PlayerDisplay';
 
 export class Splash extends State {
+    private static DEBUG: boolean = false;
+    private static DEBUG_PLAYERS: number = 4;
     private instructionsText: Text;
     private gameIdText: Text;
     private gameIdBG: PIXI.Graphics;
-    public cat1: PlayerDisplay;
-    public cat2: PlayerDisplay;
-    public cat3: PlayerDisplay;
-    public cat4: PlayerDisplay;
+
+    public player1: PlayerDisplay;
+    public player2: PlayerDisplay;
+    public player3: PlayerDisplay;
+    public player4: PlayerDisplay;
 
     public displays: PlayerDisplay[];
 
@@ -48,14 +52,26 @@ export class Splash extends State {
         this.instructionsText = this.add.text(this.app.width * 0.5, this.gameIdText.y - 100, 'to connect with your phone, select the game code below.'.toUpperCase(), Fonts.STAG_SANS_BLACK, 32, 0xffffff);
         this.instructionsText.anchor.set(0.5, 0.5);
 
-        this.cat1 = this.addChild(new PlayerDisplay(243, this.app.height - 230, 'pink', 1)) as PlayerDisplay;
-        this.cat2 = this.addChild(new PlayerDisplay(726, this.app.height - 230, 'blue', 2)) as PlayerDisplay;
-        this.cat3 = this.addChild(new PlayerDisplay(1206, this.app.height - 230, 'green', 3)) as PlayerDisplay;
-        this.cat4 = this.addChild(new PlayerDisplay(1683, this.app.height - 230, 'orange', 4)) as PlayerDisplay;
+        this.player1 = this.addChild(new PlayerDisplay(243, this.app.height - 230, 'pink', 1)) as PlayerDisplay;
+        this.player2 = this.addChild(new PlayerDisplay(726, this.app.height - 230, 'blue', 2)) as PlayerDisplay;
+        this.player3 = this.addChild(new PlayerDisplay(1206, this.app.height - 230, 'green', 3)) as PlayerDisplay;
+        this.player4 = this.addChild(new PlayerDisplay(1683, this.app.height - 230, 'orange', 4)) as PlayerDisplay;
 
-        this.displays = [this.cat1, this.cat2, this.cat3, this.cat4];
+        this.displays = [this.player1, this.player2, this.player3, this.player4];
 
         this.mediator.updateGameId();
+
+        if (Splash.DEBUG) {
+            this.debugConnectPlayers();
+        }
+    }
+
+    private debugConnectPlayers(): void {
+        for (let i = 1; i < Splash.DEBUG_PLAYERS + 1; i++) {
+            Time.wait(i).then(() => {
+                this.mediator.playerConnected(i, true);
+            })
+        }
     }
 
     // called from mediator
@@ -68,13 +84,28 @@ export class Splash extends State {
         this.gameIdBG.width = this.gameIdText.width + 100;
     }
 
-    public setPlayers(playerNum: number): void {
-        this.displays[playerNum -1].show();
+    public playerConnected(playerNum: number): void {
+        this.displays[playerNum - 1].setConnected();
+
+        if (playerNum === Splash.DEBUG_PLAYERS || playerNum === 4) {
+            Time.wait(1).then(() => { this.proceedToGame() });
+        }
     }
 
-    public update(): void {
+    public proceedToGame(): void {
+        for (let i = 0; i < 4; i++) {
+            this.displays[i].hide(i * 0.1);
+        }
+
+        Time.wait(0.75).then(() => {
+            Animator.staggerTo([this.gameIdText, this.gameIdBG], 0.4, { ease: Sine.easeIn, alpha: 0, y: "+=20" }, 0);
+            Animator.to(this.instructionsText, 0.4, { ease: Sine.easeIn, alpha: 0, y: "+=20", delay: 0.2 }).then(() => {
+                this.app.state.to('play');
+            })
+        });
     }
 
     public shutdown(): void {
+        this.mediator.destroy();
     }
 }
