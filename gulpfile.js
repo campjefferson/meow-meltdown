@@ -50,7 +50,7 @@ gulp.task("jspm:controller", function () {
 });
 
 gulp.task("vendor", function () {
-    return gulp.src(['./src/js/socket.io.js','./node_modules/gsap/src/minified/TweenMax.min.js', './node_modules/pixi.js/bin/pixi.js'])
+    return gulp.src(['./src/js/socket.io.js', './node_modules/gsap/src/minified/TweenMax.min.js', './node_modules/pixi.js/bin/pixi.js'])
         .pipe(sourcemaps.init())
         .pipe(concat('vendor.js'))
         .pipe(sourcemaps.write('.'))
@@ -122,7 +122,7 @@ gulp.task('browser-sync', function () {
     browserSync.init({
         port: controller ? 5000 : 3000,
         server: {
-            
+
             baseDir: "./dist",
             index: controller ? "controller.html" : "index.html"
         }
@@ -154,8 +154,25 @@ gulp.task('default', function (done) {
     return run(['scripts:game', 'vendor', 'css', 'data', 'images', 'spritesheets', 'html', 'fonts'], 'browser-sync', 'watch:game', done);
 });
 
-gulp.task('controller:dev', function (done) {
+gulp.task('dev:game', function (done) {
+    dev = true;
+    return run(['scripts:game', 'vendor', 'css', 'data', 'images', 'spritesheets', 'html', 'fonts'], 'browser-sync', 'watch:game', done);
+});
+
+gulp.task('dev:controller', function (done) {
     dev = true;
     controller = true;
     return run(['scripts:controller', 'vendor', 'css', 'data', 'images', 'spritesheets', 'html', 'fonts'], 'browser-sync', 'watch:controller', done);
+});
+
+gulp.task('build:controller', function (done) {
+    return run(['scripts:controller', 'vendor', 'css', 'data', 'images', 'spritesheets', 'html', 'fonts'], done);
+});
+
+gulp.task('build:game', function (done) {
+    return run(['scripts:game', 'vendor', 'css', 'data', 'images', 'spritesheets', 'html', 'fonts'], done);
+});
+
+gulp.task('build:all', function (done) {
+    return run(['scripts:game', 'scripts:controller', 'vendor', 'css', 'data', 'images', 'spritesheets', 'html', 'fonts'], done);
 });

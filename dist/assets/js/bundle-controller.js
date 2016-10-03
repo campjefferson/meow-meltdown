@@ -30,7 +30,8 @@ $__System.register('2', ['3', '4'], function (exports_1, context_1) {
                 }
                 ApplicationMediator.prototype.onRegister = function () {
                     var _this = this;
-                    this.socket = io.connect('http://localhost:4000');
+                    // this.socket = io.connect('http://localost:4000');
+                    this.socket = io.connect('https://meow-meltdown.herokuapp.com');
                     this.socket.on('controller_connected', function (event) {
                         _this.handleSocketEvent('controller_connected', event);
                     });

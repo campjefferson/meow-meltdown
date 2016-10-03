@@ -9,14 +9,13 @@ var path = require("path"),
     controllers = {},
     sockets = [],
     ids = require('./ids.json').ids,
-    PORT = 4000;
+    PORT = (process.env.PORT || 5000);
 
 // app.use(function (req, res, next) {
 //     res.header('Access-Control-Allow-Origin', '*');
 // });
 
 app.use('/', express.static(__dirname + '/dist'));
-
 
 app.get('/', function (req, res) {
     console.log(__dirname + '/dist/index.html')
@@ -35,7 +34,6 @@ server.listen(PORT, function () {
 io.on('connection', function (socket, options) {
     socket.on('game_connect', function () {
         game = getGame(socket);
-        console.log('game connected', game.id);
         socket.emit('game_connected', { id: game.id });
 
         sendGamesListToAllControllers();

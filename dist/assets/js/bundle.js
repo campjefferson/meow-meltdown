@@ -7490,7 +7490,8 @@ $__System.register('53', ['52', '54', '55'], function (exports_1, context_1) {
                 }
                 ApplicationMediator.prototype.onRegister = function () {
                     var _this = this;
-                    this.socket = socket_io_client_1.default.connect('http://localhost:4000');
+                    this.socket = socket_io_client_1.default.connect('https://meow-meltdown.herokuapp.com');
+                    // this.socket = io.connect('http://localost:4000');
                     // events to handle
                     this.socket.on('game_connected', function (event) {
                         _this.handleSocketEvent('game_connected', event);

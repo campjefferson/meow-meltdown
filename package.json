@@ -4,9 +4,9 @@
   "description": "Muliplayer WebGL game for Koodo using PIXI.js and WebGL",
   "main": "server.js",
   "scripts": {
-    "test": "gulp",
+    "test": "node server",
     "preinstall": "npm install -g jspm typings gulp",
-    "postinstall": "jspm install && typings install"
+    "postinstall": "jspm install && typings install && gulp buildAll"
   },
   "repository": {
     "type": "git",
@@ -54,6 +54,7 @@
     "underscore": "^1.8.3"
   },
   "engines": {
-    "node": "4.1.1"
+    "node": "4.5.0",
+    "npm": "2.15.9"
   }
 }

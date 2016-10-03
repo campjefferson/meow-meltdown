@@ -8,7 +8,9 @@ export class ApplicationMediator extends BaseMediator {
     public socket;
 
     public onRegister(): void {
-        this.socket = io.connect('http://localhost:4000');
+        // this.socket = io.connect('http://localost:4000');
+        this.socket = io.connect('https://meow-meltdown.herokuapp.com');
+       
         this.socket.on('controller_connected', (event) => { this.handleSocketEvent('controller_connected', event) });
         this.socket.on('games_list', (event) => { this.handleSocketEvent('games_list', event) });
         this.socket.on('start_game', (event) => { this.handleSocketEvent('start_game', event) });
