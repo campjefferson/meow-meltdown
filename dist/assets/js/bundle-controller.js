@@ -5996,16 +5996,19 @@ $__System.register("13", ["11"], function (exports_1, context_1) {
                     var obj = { seconds: seconds },
                         currentSeconds = seconds;
                     return new bluebird_1.default(function (resolve, reject) {
-                        TweenMax.to(obj, seconds, { ease: Linear.easeNone,
-                            seconds: 0, roundProps: "seconds", onUpdate: function () {
-                                if (obj.seconds !== currentSeconds) {
-                                    currentSeconds = obj.seconds;
-                                    if (updateCallback) {
-                                        updateCallback.apply(updateContext, [obj.seconds]);
-                                    }
+                        var timer = setInterval(function () {
+                            currentSeconds--;
+                            if (obj.seconds !== currentSeconds) {
+                                currentSeconds = obj.seconds;
+                                if (updateCallback) {
+                                    updateCallback.apply(updateContext, [obj.seconds]);
                                 }
-                            }, onComplete: resolve
-                        });
+                            }
+                            if (currentSeconds === 0) {
+                                clearInterval(timer);
+                                resolve();
+                            }
+                        }, 1000);
                     });
                 };
                 return Time;
