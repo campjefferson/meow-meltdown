@@ -8,10 +8,14 @@ export class TextButton extends Container {
     private _text: string;
     public enabled: boolean = true;
 
-    constructor(x, y, text: string, public color: "pink" | "blue" | "green" | "orange") {
+    constructor(x, y, text: string, public color: "pink" | "blue" | "green" | "orange", autoSetColor:boolean = false) {
         super(x, y);
         this._text = text;
         this.build();
+
+        if (autoSetColor){
+            this.setColor(this.color);
+        }
     }
 
     protected build(): void {

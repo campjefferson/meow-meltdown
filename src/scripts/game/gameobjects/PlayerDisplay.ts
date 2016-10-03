@@ -13,7 +13,6 @@ export class PlayerDisplay extends Container {
     private label: Text;
     private avatar: Sprite;
     private labelContainer: Container;
-    private grayFilter: PIXI.filters.ColorMatrixFilter;
 
     constructor(x: number, y: number, public color: CatColor, public playerNum: number) {
         super(x, y);
@@ -23,8 +22,6 @@ export class PlayerDisplay extends Container {
     private build(): void {
         this.avatar = this.addChild(new Sprite(0, 0, Resources.UI_SPRITESHEET.id, this.color + '_cat.png')) as Sprite;
         this.avatar.anchor.set(0.5, 0.5);
-        this.grayFilter = new PIXI.filters.ColorMatrixFilter();
-        this.grayFilter.greyscale(0.3, false);
 
         this.labelContainer = this.addChild(new Container(PlayerDisplay.LABEL_X, PlayerDisplay.LABEL_Y)) as Container;
 
@@ -32,13 +29,13 @@ export class PlayerDisplay extends Container {
         this.bg.anchor.set(0.5, 0.5);
 
         const gfx = this.labelContainer.addChild(new PIXI.Graphics()) as PIXI.Graphics;
-        gfx.beginFill(Colours.getPrimary(this.color));
+        gfx.beginFill(0xffffff);
         gfx.drawRect(0, 0, 336, 75);
         gfx.endFill();
 
         this.colorBg = this.labelContainer.addChild(new Sprite(0, 0, gfx.generateTexture(this.app.renderer, this.app.resolution))) as Sprite;
         this.colorBg.anchor.set(0.5, 0.5);
-        this.colorBg.filters = [this.grayFilter];
+        this.colorBg.tint = 0x666666;
 
         this.labelContainer.removeChild(gfx);
         gfx.destroy();
@@ -59,7 +56,7 @@ export class PlayerDisplay extends Container {
         Animator.to(this.avatar.scale, .3, { x: 1, y: 1, ease: Back.easeOut });
         Animator.to(this.labelContainer.scale, .1, { x: 1.2, y: 1.2, ease: Sine.easeOut, yoyo: true, repeat: 1 });
         Time.wait(0.1).then(() => {
-            this.colorBg.filters = [];
+            this.colorBg.tint = Colours.getPrimary(this.color);
             this.label.text = 'PLAYER ' + this.playerNum + ' CONNECTED';
         });
     }

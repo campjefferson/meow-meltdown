@@ -12,6 +12,7 @@ export class PlayMediator extends BaseMediator {
     public listNotificationInterests(): string[] {
         return [
             Notifications.GAME_CONNECTED,
+            Notifications.START_COUNTDOWN,
             Notifications.PLAYER_SWIPE
         ]
     }
@@ -24,11 +25,14 @@ export class PlayMediator extends BaseMediator {
             case Notifications.PLAYER_SWIPE:
                 this.game.inputSwipe(body.playerNum, body.percent); 
                 break;
+            case Notifications.START_COUNTDOWN:
+                this.game.startCountdown();
+                break;
         }
     }
 
-    public sendSwipe(percent:number){
-        this.sendNotification(Notifications.PLAYER_SWIPE, percent);
+    public sendInitCountdown():void{
+        this.sendNotification(Notifications.INIT_COUNTDOWN);
     }
 
     get numPlayers() {

@@ -23,4 +23,8 @@ export class BaseMediator extends Mediator {
     public get copyModel(): CopyModel {
         return this.app.retrieveModel(CopyModel.MODEL_NAME) as CopyModel;
     }
+    
+    public get playerNum(): number {
+        return this.appModel.playerNum;
+    }
 }

@@ -11,6 +11,8 @@ export class ApplicationMediator extends BaseMediator {
         this.socket = io.connect('http://localhost:4000');
         this.socket.on('controller_connected', (event) => { this.handleSocketEvent('controller_connected', event) });
         this.socket.on('games_list', (event) => { this.handleSocketEvent('games_list', event) });
+        this.socket.on('start_game', (event) => { this.handleSocketEvent('start_game', event) });
+        this.socket.on('start_countdown', (event) => { this.handleSocketEvent('start_countdown', event) });
 
         this.socket.emit('controller_connect');
     }
@@ -21,7 +23,9 @@ export class ApplicationMediator extends BaseMediator {
             Notifications.RECEIVED_GAMES_LIST,
             Notifications.CONNECT_TO_GAME,
             Notifications.CONNECTED_TO_GAME,
-            Notifications.PLAYER_SWIPE
+            Notifications.PLAYER_SWIPE,
+            Notifications.PLAYER_START_GAME,
+            Notifications.START_GAME
         ]
     }
 
@@ -39,6 +43,9 @@ export class ApplicationMediator extends BaseMediator {
             case Notifications.PLAYER_SWIPE:
                 this.sendSwipe(body);
                 break;
+            case Notifications.PLAYER_START_GAME:
+                this.sendPlayerStartGame();
+                break;
         }
     }
 
@@ -54,6 +61,12 @@ export class ApplicationMediator extends BaseMediator {
                 this.appModel.gamesList = event.list;
                 this.sendNotification(Notifications.RECEIVED_GAMES_LIST, this.appModel.gamesList);
                 break;
+             case 'start_game':
+                this.sendNotification(Notifications.START_GAME);
+                break;
+             case 'start_countdown':
+                this.sendNotification(Notifications.START_COUNTDOWN);
+                break;
         }
     }
 
@@ -63,6 +76,10 @@ export class ApplicationMediator extends BaseMediator {
 
     public sendSwipe(percent:number): void {
         this.socket.emit('player_swipe', {player:this.appModel.playerNum, percent:percent});
+    }
+
+    public sendPlayerStartGame(): void {
+        this.socket.emit('player_start_game');
     }
 
     public connectToGame(gameId: string) {

@@ -27,7 +27,7 @@ export class Countdown extends Container {
         gfx.drawCircle(100, 100, 100);
         gfx.endFill();
 
-        this.circle = this.addChild(new Sprite(this.app.width * 0.5, this.app.height * 0.5, gfx.generateTexture(this.app.renderer, this.app.resolution))) as Sprite;
+        this.circle = this.addChild(new Sprite(this.app.width * 0.5, this.app.height * 0.5, gfx.generateTexture(this.app.renderer,1))) as Sprite;
         this.circle.anchor.set(0.5, 0.5);
 
         gfx.destroy();

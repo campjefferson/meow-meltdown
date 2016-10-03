@@ -54,11 +54,15 @@ export class Play extends State {
 
         Animator.staggerFrom(this.bgs, 0.6, { x: this.app.width, ease: Sine.easeOut, delay: 0.6 }, 0.2);
         Animator.staggerFrom(this.players, 0.6, { y: this.app.height * 2, ease: Sine.easeOut, delay: 1.2 }, 0.2);
+
+        Time.wait(3).then(() => {
+            this.mediator.sendInitCountdown();
+        });
     }
 
-    protected showCountdown() {
-        this.countdown.show(1);
-        Time.wait(2).then(() => {
+    public startCountdown() {
+        this.countdown.show();
+        Time.wait(1).then(() => {
             this.countdown.countdown().then(() => {
                 this.start();
             });
@@ -69,7 +73,7 @@ export class Play extends State {
         this.countdown.hide();
     }
 
-    public generateBackgrounds(): void {
+    protected generateBackgrounds(): void {
         const size = this.playerContainerSize * 2;
         const gfx = this.addChild(new PIXI.Graphics()) as PIXI.Graphics;
         this.bgs = [];

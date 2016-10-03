@@ -29,7 +29,7 @@ app.get('/controller', function (req, res) {
 
 server.listen(PORT, function () {
     console.log('Example app listening on port ' + PORT + '!');
-    console.log( server.address().address );
+    console.log(server.address().address);
 });
 
 io.on('connection', function (socket, options) {
@@ -39,21 +39,20 @@ io.on('connection', function (socket, options) {
         socket.emit('game_connected', { id: game.id });
 
         sendGamesListToAllControllers();
-    });
 
-    socket.on('game_over', function (data) {
-        //_.findWhere(publicServicePulitzers, {newsroom: "The New York Times"});
-        game = _.findWhere(games, { socketId: socket.id });
-        console.log('game over', game.id);
+        socket.on('init_countdown', function () {
+            socket.emit('start_countdown');
+            emitToAllGameControllers(game.id, 'start_countdown');
+        });
 
-        game.controllers.forEach(function (controller) {
-            controller.emit('game_over', { winner: data.winner });
+        socket.on('game_over', function (data) {
+            emitToAllGameControllers(game.id, 'game_over');
         });
     });
 
     // controller
     socket.on('controller_connect', function () {
-        controllers[socket.id] = {socket:socket, socketId:socket.id, gameId:null};
+        controllers[socket.id] = { socket: socket, socketId: socket.id, gameId: null };
         sendGamesListToAllControllers();
     });
 
@@ -69,13 +68,13 @@ io.on('connection', function (socket, options) {
         game.controllers.push(socket);
         game.players = game.controllers.length;
 
-        socket.on('start_game', function (socket, percent) {
+        socket.on('player_start_game', function () {
             game.socket.emit('start_game');
+            emitToAllGameControllers(game.id, 'start_game');
         });
 
-        socket.on('swipe', function (socket, percent) {
-            var playerNum = game.controllers.indexOf(socket);
-            game.socket.emit('lick', { player: playerNum, percent: percent });
+        socket.on('player_swipe', function (data) {
+            game.socket.emit('player_swipe', { player: data.player, percent: data.percent });
         });
 
         sendGamesListToAllControllers();
@@ -96,8 +95,8 @@ io.on('connection', function (socket, options) {
     socket.on('disconnect', function () {
         var game = _.findWhere(games, { socketId: socket.id });
         if (game === undefined) {
-            var controller = _.findWhere(controllers, {id:socket.id});
-            if (controller === undefined){
+            var controller = _.findWhere(controllers, { id: socket.id });
+            if (controller === undefined) {
 
                 // continue here
                 return;
@@ -121,7 +120,7 @@ io.on('connection', function (socket, options) {
 // }
 
 function generateGameId() {
-   return ids[Math.floor(Math.random() * ids.length)];
+    return ids[Math.floor(Math.random() * ids.length)];
 }
 
 function getGame(socket) {
@@ -146,7 +145,7 @@ function getGamesList() {
         availableGames = [];
     for (var gameId in games) {
         game = games[gameId];
-            availableGames.push(game.id);
+        availableGames.push(game.id);
     }
 
     return availableGames;
@@ -159,7 +158,7 @@ function sendGamesListToAllControllers() {
     })
 }
 
-function sendEventToGameControllers(gameId, eventId, data) {
+function emitToAllGameControllers(gameId, eventId, data) {
     var game = games[gameId];
     game.controllers.forEach(function (controller) {
         controller.emit(eventId, data);
