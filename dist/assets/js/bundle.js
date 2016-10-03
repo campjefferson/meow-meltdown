@@ -7588,12 +7588,16 @@ $__System.register('56', ['57', '58'], function (exports_1, context_1) {
         execute: function () {
             TextButton = function (_super) {
                 __extends(TextButton, _super);
-                function TextButton(x, y, text, color, autoSetColor) {
+                function TextButton(x, y, text, color, autoSetColor, buttonWidth) {
                     if (autoSetColor === void 0) {
                         autoSetColor = false;
                     }
+                    if (buttonWidth === void 0) {
+                        buttonWidth = 342.5;
+                    }
                     _super.call(this, x, y);
                     this.color = color;
+                    this.buttonWidth = buttonWidth;
                     this.enabled = true;
                     this._text = text;
                     this.build();
@@ -7602,22 +7606,26 @@ $__System.register('56', ['57', '58'], function (exports_1, context_1) {
                     }
                 }
                 TextButton.prototype.build = function () {
-                    this.bg = this.addChild(new display_1.Sprite(2, 2, utils_1.Resources.UI_SPRITESHEET.id, 'button_background.png'));
+                    this.bg = this.addChild(new display_1.Sprite(0, 0, utils_1.Resources.UI_SPRITESHEET.id, 'button_background.png'));
                     this.bg.anchor.set(0.5, 0.5);
+                    this.bg.width = this.buttonWidth;
+                    this.bg.scale.y = this.bg.scale.x;
+                    this.bg.x = this.bg.y = 2 * this.bg.scale.x;
                     var gfx = this.addChild(new PIXI.Graphics());
                     gfx.beginFill(0xffffff);
-                    gfx.drawRect(0, 0, 336, 75);
+                    gfx.drawRect(0, 0, this.buttonWidth - 6 * this.bg.scale.x, this.bg.height - 5 * this.bg.scale.x);
                     gfx.endFill();
                     this.colorBg = this.addChild(new display_1.Sprite(0, 0, gfx.generateTexture(this.app.renderer, 1)));
                     this.colorBg.anchor.set(0.5, 0.5);
                     this.colorBg.tint = 0x666666;
-                    this.label = this.addChild(new display_1.Text(0, 0, this._text.toUpperCase(), utils_1.Fonts.STAG_SANS_BLACK, 22, 0xffffff));
+                    this.label = this.addChild(new display_1.Text(0, 0, this._text.toUpperCase(), utils_1.Fonts.STAG_SANS_BLACK, 24 * this.app.resolution, 0xffffff));
+                    this.label.resolution = this.app.resolution;
                     this.label.anchor.set(0.5, 0.5);
                     this.removeChild(gfx);
                     gfx.destroy();
                 };
                 TextButton.prototype.down = function () {
-                    this.colorBg.x = this.colorBg.y = this.label.x = this.label.y = 2;
+                    this.colorBg.x = this.colorBg.y = this.label.x = this.label.y = 2 * this.bg.scale.x;
                     this.bg.visible = false;
                 };
                 TextButton.prototype.up = function (selected) {
@@ -14039,19 +14047,17 @@ $__System.register("6d", ["6b"], function (exports_1, context_1) {
                     var obj = { seconds: seconds },
                         currentSeconds = seconds;
                     return new bluebird_1.default(function (resolve, reject) {
-                        var timer = setInterval(function () {
-                            currentSeconds--;
-                            if (obj.seconds !== currentSeconds) {
-                                currentSeconds = obj.seconds;
-                                if (updateCallback) {
-                                    updateCallback.apply(updateContext, [obj.seconds]);
+                        TweenMax.to(obj, seconds, {
+                            ease: Linear.easeNone,
+                            seconds: 0, roundProps: "seconds", onUpdate: function () {
+                                if (obj.seconds !== currentSeconds) {
+                                    currentSeconds = obj.seconds;
+                                    if (updateCallback) {
+                                        updateCallback.apply(updateContext, [obj.seconds]);
+                                    }
                                 }
-                            }
-                            if (currentSeconds === 0) {
-                                clearInterval(timer);
-                                resolve();
-                            }
-                        }, 1000);
+                            }, onComplete: resolve
+                        });
                     });
                 };
                 return Time;
@@ -14332,7 +14338,59 @@ $__System.register("73", [], function (exports_1, context_1) {
         }
     };
 });
-$__System.register("74", [], function (exports_1, context_1) {
+$__System.register("74", ["6f"], function (exports_1, context_1) {
+    "use strict";
+
+    var __moduleName = context_1 && context_1.id;
+    var __extends = this && this.__extends || function (d, b) {
+        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+        function __() {
+            this.constructor = d;
+        }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+    var core_1;
+    var Container;
+    return {
+        setters: [function (core_1_1) {
+            core_1 = core_1_1;
+        }],
+        execute: function () {
+            Container = function (_super) {
+                __extends(Container, _super);
+                function Container(x, y) {
+                    if (x === void 0) {
+                        x = 0;
+                    }
+                    if (y === void 0) {
+                        y = 0;
+                    }
+                    _super.call(this);
+                    this._updateable = true;
+                    this.app = core_1.PIXIApplication.getInstance();
+                    this.x = x;
+                    this.y = y;
+                }
+                Container.prototype.update = function () {
+                    // override me
+                };
+                Object.defineProperty(Container.prototype, "updateable", {
+                    get: function () {
+                        return this._updateable;
+                    },
+                    set: function (value) {
+                        this._updateable = value;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                return Container;
+            }(PIXI.Container);
+            exports_1("Container", Container);
+        }
+    };
+});
+$__System.register("75", [], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -14341,7 +14399,7 @@ $__System.register("74", [], function (exports_1, context_1) {
         execute: function () {}
     };
 });
-$__System.register('75', ['6f', '57'], function (exports_1, context_1) {
+$__System.register('76', ['6f', '57'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -14378,6 +14436,15 @@ $__System.register('75', ['6f', '57'], function (exports_1, context_1) {
                         container = this.defaultContainerInternal;
                     }
                     return container.addChild(new display_1.Sprite(x, y, atlasId, textureId));
+                };
+                Factory.prototype.rope = function (x, y, atlasId, textureId, points, container) {
+                    if (container === void 0) {
+                        container = null;
+                    }
+                    if (!container) {
+                        container = this.defaultContainerInternal;
+                    }
+                    return container.addChild(new display_1.Rope(x, y, atlasId, textureId, points));
                 };
                 Factory.prototype.tileSprite = function (x, y, atlasId, textureId, width, height, container) {
                     if (container === void 0) {
@@ -14429,7 +14496,7 @@ $__System.register('75', ['6f', '57'], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('76', ['77'], function (exports_1, context_1) {
+$__System.register('77', ['78'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -14498,7 +14565,7 @@ $__System.register('76', ['77'], function (exports_1, context_1) {
         }
     };
 });
-$__System.register("78", ["77"], function (exports_1, context_1) {
+$__System.register("79", ["78"], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -14580,7 +14647,7 @@ $__System.register("78", ["77"], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('79', ['7a'], function (exports_1, context_1) {
+$__System.register('7a', ['7b'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -14635,7 +14702,7 @@ $__System.register('79', ['7a'], function (exports_1, context_1) {
         }
     };
 });
-$__System.register("7b", ["7c"], function (exports_1, context_1) {
+$__System.register("7c", ["7d"], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -14723,7 +14790,7 @@ $__System.register("7b", ["7c"], function (exports_1, context_1) {
         }
     };
 });
-$__System.register("7a", ["7c"], function (exports_1, context_1) {
+$__System.register("7b", ["7d"], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -14775,7 +14842,7 @@ $__System.register("7a", ["7c"], function (exports_1, context_1) {
         }
     };
 });
-$__System.register("7d", [], function (exports_1, context_1) {
+$__System.register("7e", [], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -14810,7 +14877,7 @@ $__System.register("7d", [], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('7c', ['64'], function (exports_1, context_1) {
+$__System.register('7d', ['64'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -14984,7 +15051,7 @@ $__System.register('7c', ['64'], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('64', ['79', '7b', '7a', '7d', '7c'], function (exports_1, context_1) {
+$__System.register('64', ['7a', '7c', '7b', '7e', '7d'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -15013,7 +15080,7 @@ $__System.register('64', ['79', '7b', '7a', '7d', '7c'], function (exports_1, co
         execute: function () {}
     };
 });
-$__System.register('77', ['64', '6f', '57'], function (exports_1, context_1) {
+$__System.register('78', ['64', '6f', '57'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -15153,7 +15220,7 @@ $__System.register('77', ['64', '6f', '57'], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('7e', ['77'], function (exports_1, context_1) {
+$__System.register('7f', ['78'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -15201,7 +15268,7 @@ $__System.register('7e', ['77'], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('6f', ['77', '74', '75', '76', '78', '7e'], function (exports_1, context_1) {
+$__System.register('6f', ['78', '75', '76', '77', '79', '7f'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -15235,7 +15302,7 @@ $__System.register('6f', ['77', '74', '75', '76', '78', '7e'], function (exports
         execute: function () {}
     };
 });
-$__System.register("7f", ["6f"], function (exports_1, context_1) {
+$__System.register('80', ['6f'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -15247,47 +15314,38 @@ $__System.register("7f", ["6f"], function (exports_1, context_1) {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
     var core_1;
-    var Container;
+    var Rope;
     return {
         setters: [function (core_1_1) {
             core_1 = core_1_1;
         }],
         execute: function () {
-            Container = function (_super) {
-                __extends(Container, _super);
-                function Container(x, y) {
+            Rope = function (_super) {
+                __extends(Rope, _super);
+                function Rope(x, y, atlasId, textureId, points) {
                     if (x === void 0) {
                         x = 0;
                     }
                     if (y === void 0) {
                         y = 0;
                     }
-                    _super.call(this);
-                    this._updateable = true;
-                    this.app = core_1.PIXIApplication.getInstance();
+                    if (atlasId === void 0) {
+                        atlasId = null;
+                    }
+                    if (textureId === void 0) {
+                        textureId = null;
+                    }
+                    _super.call(this, !textureId ? typeof atlasId === 'string' ? PIXI.Texture.fromImage(atlasId) : atlasId : core_1.Loader.getTextureById(atlasId, textureId), points);
                     this.x = x;
                     this.y = y;
                 }
-                Container.prototype.update = function () {
-                    // override me
-                };
-                Object.defineProperty(Container.prototype, "updateable", {
-                    get: function () {
-                        return this._updateable;
-                    },
-                    set: function (value) {
-                        this._updateable = value;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                return Container;
-            }(PIXI.Container);
-            exports_1("Container", Container);
+                return Rope;
+            }(PIXI.mesh.Rope);
+            exports_1("Rope", Rope);
         }
     };
 });
-$__System.register('57', ['6e', '70', '71', '72', '73', '7f'], function (exports_1, context_1) {
+$__System.register('57', ['6e', '70', '71', '72', '73', '74', '80'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -15316,11 +15374,15 @@ $__System.register('57', ['6e', '70', '71', '72', '73', '7f'], function (exports
             exports_1({
                 "Container": Container_1_1["Container"]
             });
+        }, function (Rope_1_1) {
+            exports_1({
+                "Rope": Rope_1_1["Rope"]
+            });
         }],
         execute: function () {}
     };
 });
-$__System.register('80', ['5a', '58', '57'], function (exports_1, context_1) {
+$__System.register('81', ['5a', '58', '57'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -15394,7 +15456,7 @@ $__System.register('80', ['5a', '58', '57'], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('81', ['57', '5a', '58', '66', '80'], function (exports_1, context_1) {
+$__System.register('82', ['57', '5a', '58', '66', '81'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -15437,15 +15499,16 @@ $__System.register('81', ['57', '5a', '58', '66', '80'], function (exports_1, co
                 Splash.prototype.build = function () {
                     console.log('splash build');
                     this.displays = [];
-                    this.gameIdBG = new PIXI.Graphics();
-                    this.gameIdBG.beginFill(0xffffff);
-                    this.gameIdBG.drawRect(0, 0, 300, 75);
-                    this.gameIdBG.endFill();
-                    this.gameIdBG.x = this.app.width * 0.5;
-                    this.gameIdBG.y = this.app.height * 0.5;
-                    this.gameIdBG.pivot.set(this.gameIdBG.width * 0.5, this.gameIdBG.height * 0.5);
-                    this.addChild(this.gameIdBG);
-                    this.gameIdText = this.add.text(this.app.width * 0.5, this.app.height * 0.5, '12345', utils_2.Fonts.STAG_SANS_BLACK, 46, utils_2.Colours.BLUE_PRIMARY);
+                    this.title = this.add.sprite(this.app.width * 0.5, 300, utils_2.Resources.UI_SPRITESHEET.id, 'title.png');
+                    this.title.anchor.set(0.5);
+                    var gfx = new PIXI.Graphics();
+                    gfx.beginFill(0xffffff);
+                    gfx.drawRect(0, 0, 300, 75);
+                    gfx.endFill();
+                    this.gameIdBG = this.add.sprite(this.app.width * 0.5, this.app.height * 0.5 + 100, gfx.generateTexture(this.app.renderer, 1));
+                    this.gameIdBG.anchor.set(0.5);
+                    gfx.destroy();
+                    this.gameIdText = this.add.text(this.gameIdBG.x, this.gameIdBG.y, '12345', utils_2.Fonts.STAG_SANS_BLACK, 46, utils_2.Colours.BLUE_PRIMARY);
                     this.gameIdText.anchor.set(0.5, 0.5);
                     this.instructionsText = this.add.text(this.app.width * 0.5, this.gameIdText.y - 100, 'to connect with your phone, select the game code below.'.toUpperCase(), utils_2.Fonts.STAG_SANS_BLACK, 32, 0xffffff);
                     this.instructionsText.anchor.set(0.5, 0.5);
@@ -15493,7 +15556,7 @@ $__System.register('81', ['57', '5a', '58', '66', '80'], function (exports_1, co
                         this.displays[i].hide(i * 0.1);
                     }
                     utils_1.Time.wait(0.75).then(function () {
-                        utils_1.Animator.staggerTo([_this.gameIdText, _this.gameIdBG], 0.4, { ease: Sine.easeIn, alpha: 0, y: "+=20" }, 0);
+                        utils_1.Animator.staggerTo([_this.title, _this.gameIdText, _this.gameIdBG], 0.4, { ease: Sine.easeIn, alpha: 0, y: "+=20" }, 0);
                         utils_1.Animator.to(_this.instructionsText, 0.4, { ease: Sine.easeIn, alpha: 0, y: "+=20", delay: 0.2 }).then(function () {
                             _this.app.state.to('play');
                         });
@@ -15510,7 +15573,7 @@ $__System.register('81', ['57', '5a', '58', '66', '80'], function (exports_1, co
         }
     };
 });
-$__System.register('82', ['62', '81'], function (exports_1, context_1) {
+$__System.register('83', ['62', '82'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -15527,7 +15590,7 @@ $__System.register('82', ['62', '81'], function (exports_1, context_1) {
         execute: function () {}
     };
 });
-$__System.register('83', ['6f', '63', '53', '82'], function (exports_1, context_1) {
+$__System.register('84', ['6f', '63', '53', '83'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -15571,7 +15634,7 @@ $__System.register('83', ['6f', '63', '53', '82'], function (exports_1, context_
         }
     };
 });
-$__System.register('84', [], function (exports_1, context_1) {
+$__System.register('85', [], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -15589,7 +15652,7 @@ $__System.register('84', [], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('85', [], function (exports_1, context_1) {
+$__System.register('86', [], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -15671,7 +15734,7 @@ $__System.register('85', [], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('86', [], function (exports_1, context_1) {
+$__System.register('87', [], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -15697,7 +15760,7 @@ $__System.register('86', [], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('58', ['84', '85', '86'], function (exports_1, context_1) {
+$__System.register('58', ['85', '86', '87'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -15719,7 +15782,7 @@ $__System.register('58', ['84', '85', '86'], function (exports_1, context_1) {
     };
 });
 /// <reference path="../../typings/index.d.ts" />
-$__System.register('1', ['83', '58'], function (exports_1, context_1) {
+$__System.register('1', ['84', '58'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;

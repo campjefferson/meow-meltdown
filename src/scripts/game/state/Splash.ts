@@ -9,9 +9,10 @@ import {PlayerDisplay} from 'game/gameobjects/PlayerDisplay';
 export class Splash extends State {
     private static DEBUG: boolean = false;
     private static DEBUG_PLAYERS: number = 4;
+    private title: Sprite;
     private instructionsText: Text;
     private gameIdText: Text;
-    private gameIdBG: PIXI.Graphics;
+    private gameIdBG: PIXI.Sprite;
 
     public player1: PlayerDisplay;
     public player2: PlayerDisplay;
@@ -37,16 +38,20 @@ export class Splash extends State {
         console.log('splash build')
         this.displays = [];
 
-        this.gameIdBG = new PIXI.Graphics();
-        this.gameIdBG.beginFill(0xffffff);
-        this.gameIdBG.drawRect(0, 0, 300, 75);
-        this.gameIdBG.endFill();
-        this.gameIdBG.x = this.app.width * 0.5;
-        this.gameIdBG.y = this.app.height * 0.5;
-        this.gameIdBG.pivot.set(this.gameIdBG.width * 0.5, this.gameIdBG.height * 0.5);
-        this.addChild(this.gameIdBG);
+        this.title = this.add.sprite(this.app.width * 0.5, 300, Resources.UI_SPRITESHEET.id, 'title.png');
+        this.title.anchor.set(0.5);
 
-        this.gameIdText = this.add.text(this.app.width * 0.5, this.app.height * 0.5, '12345', Fonts.STAG_SANS_BLACK, 46, Colours.BLUE_PRIMARY);
+        const gfx = new PIXI.Graphics();
+        gfx.beginFill(0xffffff);
+        gfx.drawRect(0, 0, 300, 75);
+        gfx.endFill();
+
+        this.gameIdBG = this.add.sprite(this.app.width * 0.5, this.app.height * 0.5 + 100, gfx.generateTexture(this.app.renderer, 1));
+        this.gameIdBG.anchor.set(0.5);
+
+        gfx.destroy(); 
+
+        this.gameIdText = this.add.text(this.gameIdBG.x, this.gameIdBG.y, '12345', Fonts.STAG_SANS_BLACK, 46, Colours.BLUE_PRIMARY);
         this.gameIdText.anchor.set(0.5, 0.5);
 
         this.instructionsText = this.add.text(this.app.width * 0.5, this.gameIdText.y - 100, 'to connect with your phone, select the game code below.'.toUpperCase(), Fonts.STAG_SANS_BLACK, 32, 0xffffff);
@@ -98,7 +103,7 @@ export class Splash extends State {
         }
 
         Time.wait(0.75).then(() => {
-            Animator.staggerTo([this.gameIdText, this.gameIdBG], 0.4, { ease: Sine.easeIn, alpha: 0, y: "+=20" }, 0);
+            Animator.staggerTo([this.title, this.gameIdText, this.gameIdBG], 0.4, { ease: Sine.easeIn, alpha: 0, y: "+=20" }, 0);
             Animator.to(this.instructionsText, 0.4, { ease: Sine.easeIn, alpha: 0, y: "+=20", delay: 0.2 }).then(() => {
                 this.app.state.to('play');
             })

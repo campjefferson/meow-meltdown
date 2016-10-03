@@ -2,7 +2,7 @@
 
 "blue_cat.png":
 {
-	"frame": {"x":1,"y":84,"w":163,"h":173},
+	"frame": {"x":740,"y":240,"w":163,"h":173},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":163,"h":173},
@@ -10,7 +10,7 @@
 },
 "button_background.png":
 {
-	"frame": {"x":1,"y":1,"w":343,"h":81},
+	"frame": {"x":1400,"y":240,"w":343,"h":81},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":343,"h":81},
@@ -18,7 +18,7 @@
 },
 "green_cat.png":
 {
-	"frame": {"x":1,"y":259,"w":163,"h":173},
+	"frame": {"x":905,"y":240,"w":163,"h":173},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":163,"h":173},
@@ -26,7 +26,7 @@
 },
 "orange_cat.png":
 {
-	"frame": {"x":166,"y":84,"w":163,"h":173},
+	"frame": {"x":1070,"y":240,"w":163,"h":173},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":163,"h":173},
@@ -34,19 +34,35 @@
 },
 "pink_cat.png":
 {
-	"frame": {"x":166,"y":259,"w":163,"h":173},
+	"frame": {"x":1235,"y":240,"w":163,"h":173},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":163,"h":173},
 	"sourceSize": {"w":163,"h":173}
+},
+"title.png":
+{
+	"frame": {"x":1,"y":1,"w":737,"h":362},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":737,"h":362},
+	"sourceSize": {"w":737,"h":362}
+},
+"tongue.png":
+{
+	"frame": {"x":740,"y":1,"w":1015,"h":237},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":1015,"h":237},
+	"sourceSize": {"w":1024,"h":237}
 }},
 "meta": {
 	"app": "http://www.codeandweb.com/texturepacker",
 	"version": "1.0",
 	"image": "ui.png",
 	"format": "RGBA8888",
-	"size": {"w":345,"h":433},
+	"size": {"w":1756,"h":414},
 	"scale": "0.5",
-	"smartupdate": "$TexturePacker:SmartUpdate:7ce3e4886208d7baf4a6438fa2033641:3f9e06c8594df2267517d641f8a54291:8661360907c76cd02bb42c22d3e16d87$"
+	"smartupdate": "$TexturePacker:SmartUpdate:8363b4d6bc2e8f5c36501b828df7af32:ef41fe0f6acc81bdc8d6d375cb2e741d:8661360907c76cd02bb42c22d3e16d87$"
 }
 }

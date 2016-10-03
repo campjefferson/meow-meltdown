@@ -1,5 +1,5 @@
 import {Animator, Time} from 'bolt/utils';
-import {State, Text, Container, Sprite} from 'lightning/display';
+import {State, Text, Container, Sprite, Rope} from 'lightning/display';
 import {Animation} from 'lightning/utils';
 import {Fonts, Resources, Colours} from 'common/utils';
 import {Ribbon, Countdown, TextButton} from 'common/ui';
@@ -12,6 +12,12 @@ export class Play extends State {
 
     private listContainer: Container = null;
     private inputArea: Sprite;
+    private tongueContainer: Container;
+    private tongue: Rope;
+    private tongueInterval: number = 0;
+    private tonguePoints: PIXI.Point[];
+    private numTonguePoints: number;
+    private tongueLength: number;
     private startGameButton: TextButton;
     private isSwiping: boolean = false;
     private swipeStart: PIXI.Point;
@@ -33,7 +39,6 @@ export class Play extends State {
     public build(): void {
         console.log('controller build')
         this.addInputArea();
-        
 
         this.countdown = this.app.ui.addChild(new Countdown(0, 0, Play.COLOURS[this.mediator.playerNum - 1])) as Countdown;
 
@@ -66,11 +71,31 @@ export class Play extends State {
         this.removeChild(gfx);
         gfx.destroy();
 
+        this.tongueLength = (this.app.height) / 10;
+        this.tonguePoints = this.getTonguePoints();
+        this.numTonguePoints = this.tonguePoints.length;
+
+        this.tongueContainer = this.add.container(this.app.width * 0.5, this.app.height+ 20);
+        this.tongueContainer.rotation = -90 * Math.PI / 180;
+        this.tongue = this.add.rope(0, 0, Resources.UI_SPRITESHEET.id, 'tongue.png', this.tonguePoints, this.tongueContainer);//this.add.sprite(this.app.width * 0.5, this.app.height, Resources.UI_SPRITESHEET.id, 'tongue.png');
+        this.tongue.width = this.app.height;
+        this.tongue.scale.y = this.tongue.scale.x;
+        this.tongue.tint = Colours.getPrimary(Play.COLOURS[this.mediator.playerNum - 1]);
+
         Animator.from(this.inputArea, 0.5, { alpha: 0, ease: Sine.easeOut });
+        Animator.from(this.tongueContainer, 0.4, { y: this.app.height*2, ease: Sine.easeOut, delay: 0.3 });
+    }
+
+    protected getTonguePoints(): PIXI.Point[] {
+        let points = [];
+        for (var i = 0; i < 10; i++) {
+            points.push(new PIXI.Point(i * this.tongueLength, 0));
+        }
+        return points;
     }
 
     protected addStartGameButton(): void {
-        const startGameButton = this.add.existing(new TextButton(this.app.width * 0.5, this.app.height * 0.5, 'START GAME', Play.COLOURS[this.mediator.playerNum - 1], true)) as TextButton;
+        const startGameButton = this.add.existing(new TextButton(this.app.width * 0.5, this.app.height * 0.5, 'START GAME', Play.COLOURS[this.mediator.playerNum - 1], true, this.app.width -200)) as TextButton;
         startGameButton.interactive = true;
         startGameButton.on('mousedown', this.onButtonPress, this)
             .on('touchstart', this.onButtonPress, this);
@@ -148,7 +173,17 @@ export class Play extends State {
         console.log('swiped', this.swipeDistance, this.swipePercent);
     }
 
+    protected updateTongue(): void {
+        this.tongueInterval += 0.1;
+
+        for (let i = 0; i < this.numTonguePoints; i++) {
+            this.tonguePoints[i].y = Math.sin((i * 0.5) + this.tongueInterval) * 10;
+            this.tonguePoints[i].x = i * this.tongueLength + Math.cos((i * 0.3) + this.tongueInterval) * 7;
+        }
+    }
+
     public update(): void {
+        this.updateTongue();
     }
 
     public shutdown(): void {
