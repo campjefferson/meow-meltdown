@@ -2,9 +2,10 @@
   "name": "koodo-icecream-game",
   "version": "0.0.1",
   "description": "Muliplayer WebGL game for Koodo using PIXI.js and WebGL",
-  "main": "index.html",
+  "main": "server.js",
   "scripts": {
     "test": "gulp",
+    "preinstall": "npm install -g jspm typings",
     "postinstall": "jspm install && typings install && gulp"
   },
   "repository": {
@@ -51,5 +52,8 @@
     "pixi.js": "^4.0.2",
     "socket.io": "^1.4.8",
     "underscore": "^1.8.3"
+  },
+  "engines": {
+    "node": "4.1.1"
   }
 }
