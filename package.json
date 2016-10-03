@@ -6,7 +6,7 @@
   "scripts": {
     "test": "node server",
     "preinstall": "npm install -g jspm typings gulp",
-    "postinstall": "jspm install && typings install && gulp buildAll"
+    "postinstall": "jspm install && typings install && gulp build:all"
   },
   "repository": {
     "type": "git",
