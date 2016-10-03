@@ -5,8 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "gulp",
-    "preinstall": "npm install -g jspm typings",
-    "postinstall": "jspm install && typings install && gulp"
+    "preinstall": "npm install -g jspm typings gulp",
+    "postinstall": "jspm install && typings install"
   },
   "repository": {
     "type": "git",
