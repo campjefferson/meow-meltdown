@@ -13,6 +13,7 @@ export class Splash extends State {
     public splashText2: Text;
     protected mediator: SplashMediator;
     private listContainer: Container = null;
+    private buttonHeight: number = 0;
     private buttons: { [id: string]: TextButton } = {};
 
     public init(): void {
@@ -33,10 +34,10 @@ export class Splash extends State {
 
         this.title.y = this.title.height * 0.5 + 100;
 
-        this.splashText2 = this.addChild(new Text(this.app.width * 0.5, this.title.y + this.title.height * 0.5 + (50* this.app.resolution), 'SELECT A GAME', Fonts.STAG_SANS_BLACK, 32 * this.app.resolution, 0xffffff)) as Text;
+        this.splashText2 = this.addChild(new Text(this.app.width * 0.5, this.title.y + this.title.height * 0.5 + (50 * this.app.resolution), 'SELECT A GAME', Fonts.STAG_SANS_BLACK, 32 * this.app.resolution, 0xffffff)) as Text;
         this.splashText2.anchor.set(0.5, 0.5);
 
-        this.listContainer = this.add.container(this.app.width * 0.5, this.splashText2.y + this.splashText2.height + (75* this.app.resolution));
+        this.listContainer = this.add.container(this.app.width * 0.5, this.splashText2.y + this.splashText2.height + (75 * this.app.resolution));
         this.refreshGamesList(this.mediator.getGamesList());
     }
 
@@ -52,20 +53,23 @@ export class Splash extends State {
     public showConnection(gameId: string, playerNum: number): void {
         this.buttons[gameId].setColor(Splash.COLOURS[playerNum - 1]);
 
-        Time.wait(1).then(()=>{this.proceedToGame()});
+        Time.wait(1).then(() => { this.proceedToGame() });
     }
 
-    public proceedToGame():void{
-        Animator.staggerTo([this.title, this.splashText2, this.listContainer], 0.5, {x:-500, ease:Back.easeIn}, 0.1).then(()=>{
+    public proceedToGame(): void {
+        Animator.staggerTo([this.title, this.splashText2, this.listContainer], 0.5, { x: -500, ease: Back.easeIn }, 0.1).then(() => {
             this.app.state.to('play');
         })
     }
 
     protected addGameButton(gameId: string): void {
         //const txt: Text = new Text(0, this.listContainer.children.length * 50, gameId, Fonts.STAG_SANS_BLACK, 36, 0);
-        const btn: TextButton = new TextButton(0, this.listContainer.children.length * 85, gameId, 'blue', false, this.app.width-200);
+        const btn: TextButton = new TextButton(0, this.listContainer.children.length * (this.buttonHeight + 20), gameId, 'blue', false, this.app.width - 200);
         this.buttons[gameId] = btn;
         btn.interactive = true;
+        if (this.buttonHeight === 0) {
+            this.buttonHeight = btn.height;
+        }
 
         btn.on('mousedown', this.onButtonPress, this)
             .on('touchstart', this.onButtonPress, this)

@@ -230,6 +230,7 @@ $__System.register('6', ['7', '8', '5', '9', 'a'], function (exports_1, context_
                 function Splash() {
                     _super.apply(this, arguments);
                     this.listContainer = null;
+                    this.buttonHeight = 0;
                     this.buttons = {};
                 }
                 Splash.prototype.init = function () {
@@ -274,9 +275,12 @@ $__System.register('6', ['7', '8', '5', '9', 'a'], function (exports_1, context_
                 };
                 Splash.prototype.addGameButton = function (gameId) {
                     //const txt: Text = new Text(0, this.listContainer.children.length * 50, gameId, Fonts.STAG_SANS_BLACK, 36, 0);
-                    var btn = new ui_1.TextButton(0, this.listContainer.children.length * 85, gameId, 'blue', false, this.app.width - 200);
+                    var btn = new ui_1.TextButton(0, this.listContainer.children.length * (this.buttonHeight + 20), gameId, 'blue', false, this.app.width - 200);
                     this.buttons[gameId] = btn;
                     btn.interactive = true;
+                    if (this.buttonHeight === 0) {
+                        this.buttonHeight = btn.height;
+                    }
                     btn.on('mousedown', this.onButtonPress, this).on('touchstart', this.onButtonPress, this);
                     btn.on('mouseup', this.onButtonRelease, this).on('touchend', this.onButtonRelease, this);
                     btn.on('mouseupoutside', this.onButtonReleaseOutside, this).on('touchendoutside', this.onButtonReleaseOutside, this);
