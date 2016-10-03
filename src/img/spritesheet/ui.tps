@@ -210,6 +210,8 @@
             <key type="filename">ui/green_cat.png</key>
             <key type="filename">ui/orange_cat.png</key>
             <key type="filename">ui/pink_cat.png</key>
+            <key type="filename">ui/title.png</key>
+            <key type="filename">ui/tongue.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>

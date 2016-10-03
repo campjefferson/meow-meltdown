@@ -2,7 +2,7 @@
 
 "blue_cat.png":
 {
-	"frame": {"x":1,"y":84,"w":163,"h":173},
+	"frame": {"x":585,"y":365,"w":163,"h":173},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":163,"h":173},
@@ -10,7 +10,7 @@
 },
 "button_background.png":
 {
-	"frame": {"x":1,"y":1,"w":343,"h":81},
+	"frame": {"x":240,"y":365,"w":343,"h":81},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":343,"h":81},
@@ -18,7 +18,7 @@
 },
 "green_cat.png":
 {
-	"frame": {"x":1,"y":259,"w":163,"h":173},
+	"frame": {"x":750,"y":365,"w":163,"h":173},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":163,"h":173},
@@ -26,7 +26,7 @@
 },
 "orange_cat.png":
 {
-	"frame": {"x":166,"y":84,"w":163,"h":173},
+	"frame": {"x":240,"y":448,"w":163,"h":173},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":163,"h":173},
@@ -34,19 +34,35 @@
 },
 "pink_cat.png":
 {
-	"frame": {"x":166,"y":259,"w":163,"h":173},
+	"frame": {"x":405,"y":448,"w":163,"h":173},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":163,"h":173},
 	"sourceSize": {"w":163,"h":173}
+},
+"title.png":
+{
+	"frame": {"x":240,"y":1,"w":737,"h":362},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":737,"h":362},
+	"sourceSize": {"w":737,"h":362}
+},
+"tongue.png":
+{
+	"frame": {"x":1,"y":1,"w":237,"h":1016},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":8,"w":237,"h":1016},
+	"sourceSize": {"w":237,"h":1024}
 }},
 "meta": {
 	"app": "http://www.codeandweb.com/texturepacker",
 	"version": "1.0",
 	"image": "ui.png",
 	"format": "RGBA8888",
-	"size": {"w":345,"h":433},
+	"size": {"w":978,"h":1018},
 	"scale": "0.5",
-	"smartupdate": "$TexturePacker:SmartUpdate:7ce3e4886208d7baf4a6438fa2033641:3f9e06c8594df2267517d641f8a54291:8661360907c76cd02bb42c22d3e16d87$"
+	"smartupdate": "$TexturePacker:SmartUpdate:5c4a9ebc21e768f5392844dc7d385c2b:e29e7c9522cd99cb61e6ebb940289e85:8661360907c76cd02bb42c22d3e16d87$"
 }
 }

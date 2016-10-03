@@ -2,7 +2,7 @@
 
 "blue_cat.png":
 {
-	"frame": {"x":1,"y":164,"w":326,"h":346},
+	"frame": {"x":1163,"y":726,"w":326,"h":346},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":326,"h":346},
@@ -10,7 +10,7 @@
 },
 "button_background.png":
 {
-	"frame": {"x":1,"y":1,"w":685,"h":161},
+	"frame": {"x":476,"y":726,"w":685,"h":161},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":685,"h":161},
@@ -18,7 +18,7 @@
 },
 "green_cat.png":
 {
-	"frame": {"x":1,"y":512,"w":326,"h":346},
+	"frame": {"x":1491,"y":726,"w":326,"h":346},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":326,"h":346},
@@ -26,7 +26,7 @@
 },
 "orange_cat.png":
 {
-	"frame": {"x":329,"y":164,"w":326,"h":346},
+	"frame": {"x":476,"y":889,"w":326,"h":346},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":326,"h":346},
@@ -34,19 +34,35 @@
 },
 "pink_cat.png":
 {
-	"frame": {"x":329,"y":512,"w":326,"h":346},
+	"frame": {"x":804,"y":889,"w":326,"h":346},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":326,"h":346},
 	"sourceSize": {"w":326,"h":346}
+},
+"title.png":
+{
+	"frame": {"x":476,"y":1,"w":1474,"h":723},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1474,"h":723},
+	"sourceSize": {"w":1474,"h":723}
+},
+"tongue.png":
+{
+	"frame": {"x":1,"y":1,"w":473,"h":2030},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":18,"w":473,"h":2030},
+	"sourceSize": {"w":474,"h":2048}
 }},
 "meta": {
 	"app": "http://www.codeandweb.com/texturepacker",
 	"version": "1.0",
 	"image": "ui@2x.png",
 	"format": "RGBA8888",
-	"size": {"w":687,"h":859},
+	"size": {"w":1951,"h":2032},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:7ce3e4886208d7baf4a6438fa2033641:3f9e06c8594df2267517d641f8a54291:8661360907c76cd02bb42c22d3e16d87$"
+	"smartupdate": "$TexturePacker:SmartUpdate:5c4a9ebc21e768f5392844dc7d385c2b:e29e7c9522cd99cb61e6ebb940289e85:8661360907c76cd02bb42c22d3e16d87$"
 }
 }
