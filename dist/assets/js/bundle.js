@@ -8264,6 +8264,7 @@ $__System.register('62', ['57', '5a', '58', '5c', '60', '61'], function (exports
                 };
                 Play.prototype.inputSwipe = function (playerNum, percent) {
                     this.players[playerNum - 1].lick(percent);
+                    this.app.sound.play('sfx', Play.SLURP_SOUNDS[Math.floor(Math.random() * 3)]);
                 };
                 Play.prototype.update = function () {
                     this.updatePlayers();
@@ -8285,6 +8286,7 @@ $__System.register('62', ['57', '5a', '58', '5c', '60', '61'], function (exports
                             this.winner++;
                             this.players[i].canWin = false;
                             this.players[i].ribbon.setPosition(this.winner);
+                            this.app.sound.play('sfx', 'fruit_collected');
                         }
                     }
                 };
@@ -8292,6 +8294,7 @@ $__System.register('62', ['57', '5a', '58', '5c', '60', '61'], function (exports
                     this.mediator.destroy();
                 };
                 Play.PLAYER_COLORS = ['pink', 'blue', 'green', 'orange'];
+                Play.SLURP_SOUNDS = ['straw_slurp', 'slurping_2', 'slurp'];
                 return Play;
             }(display_1.State);
             exports_1("Play", Play);
@@ -8587,53 +8590,7 @@ $__System.register("67", [], function (exports_1, context_1) {
         }
     };
 });
-$__System.register("68", [], function (exports_1, context_1) {
-    "use strict";
-
-    var __moduleName = context_1 && context_1.id;
-    var Logger;
-    return {
-        setters: [],
-        execute: function () {
-            Logger = function () {
-                function Logger() {}
-                Logger.log = function (instance) {
-                    var args = [];
-                    for (var _i = 1; _i < arguments.length; _i++) {
-                        args[_i - 1] = arguments[_i];
-                    }
-                    if (!Logger.enabled) {
-                        return;
-                    }
-                    if (instance && instance.constructor) {
-                        args.unshift(instance.constructor.toString().match(/\w+/g)[1] + ' ::');
-                    }
-                    return console.log.apply(console, args);
-                };
-                Logger.enabled = true;
-                return Logger;
-            }();
-            exports_1("Logger", Logger);
-        }
-    };
-});
-$__System.register("69", [], function (exports_1, context_1) {
-    "use strict";
-
-    var __moduleName = context_1 && context_1.id;
-    var Notifications;
-    return {
-        setters: [],
-        execute: function () {
-            Notifications = function () {
-                function Notifications() {}
-                return Notifications;
-            }();
-            exports_1("Notifications", Notifications);
-        }
-    };
-});
-$__System.register("6a", ["6b"], function (exports_1, context_1) {
+$__System.register("68", ["69"], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -8701,7 +8658,7 @@ $__System.register("6a", ["6b"], function (exports_1, context_1) {
         }
     };
 });
-$__System.registerDynamic("6c", [], false, function ($__require, $__exports, $__module) {
+$__System.registerDynamic("6a", [], false, function ($__require, $__exports, $__module) {
     var _retrieveGlobal = $__System.get("@@global-helpers").prepareGlobal($__module.id, null, null);
 
     (function ($__global) {
@@ -14016,14 +13973,14 @@ $__System.registerDynamic("6c", [], false, function ($__require, $__exports, $__
 
     return _retrieveGlobal();
 });
-$__System.registerDynamic("6b", ["6c"], true, function ($__require, exports, module) {
+$__System.registerDynamic("69", ["6a"], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
-  module.exports = $__require("6c");
+  module.exports = $__require("6a");
   return module.exports;
 });
-$__System.register("6d", ["6b"], function (exports_1, context_1) {
+$__System.register("6b", ["69"], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -14066,7 +14023,7 @@ $__System.register("6d", ["6b"], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('5a', ['67', '68', '69', '6a', '6d'], function (exports_1, context_1) {
+$__System.register('5a', ['67', '68', '6b'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -14074,14 +14031,6 @@ $__System.register('5a', ['67', '68', '69', '6a', '6d'], function (exports_1, co
         setters: [function (Device_1_1) {
             exports_1({
                 "Device": Device_1_1["Device"]
-            });
-        }, function (Logger_1_1) {
-            exports_1({
-                "Logger": Logger_1_1["Logger"]
-            });
-        }, function (Notifications_1_1) {
-            exports_1({
-                "Notifications": Notifications_1_1["Notifications"]
             });
         }, function (Animator_1_1) {
             exports_1({
@@ -14095,7 +14044,7 @@ $__System.register('5a', ['67', '68', '69', '6a', '6d'], function (exports_1, co
         execute: function () {}
     };
 });
-$__System.register("6e", ["6f"], function (exports_1, context_1) {
+$__System.register("6c", ["6d"], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -14160,7 +14109,7 @@ $__System.register("6e", ["6f"], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('70', ['6f'], function (exports_1, context_1) {
+$__System.register('6e', ['6d'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -14212,7 +14161,7 @@ $__System.register('70', ['6f'], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('71', ['6f'], function (exports_1, context_1) {
+$__System.register('6f', ['6d'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -14255,7 +14204,7 @@ $__System.register('71', ['6f'], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('72', ['6f'], function (exports_1, context_1) {
+$__System.register('70', ['6d'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -14304,7 +14253,7 @@ $__System.register('72', ['6f'], function (exports_1, context_1) {
         }
     };
 });
-$__System.register("73", [], function (exports_1, context_1) {
+$__System.register("71", [], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -14338,7 +14287,7 @@ $__System.register("73", [], function (exports_1, context_1) {
         }
     };
 });
-$__System.register("74", ["6f"], function (exports_1, context_1) {
+$__System.register("72", ["6d"], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -14390,7 +14339,7 @@ $__System.register("74", ["6f"], function (exports_1, context_1) {
         }
     };
 });
-$__System.register("75", [], function (exports_1, context_1) {
+$__System.register("73", [], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -14399,7 +14348,7 @@ $__System.register("75", [], function (exports_1, context_1) {
         execute: function () {}
     };
 });
-$__System.register('76', ['6f', '57'], function (exports_1, context_1) {
+$__System.register('74', ['6d', '57'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -14496,7 +14445,7 @@ $__System.register('76', ['6f', '57'], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('77', ['78'], function (exports_1, context_1) {
+$__System.register('75', ['76'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -14565,7 +14514,7 @@ $__System.register('77', ['78'], function (exports_1, context_1) {
         }
     };
 });
-$__System.register("79", ["78"], function (exports_1, context_1) {
+$__System.register("77", ["76"], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -14647,7 +14596,99 @@ $__System.register("79", ["78"], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('7a', ['7b'], function (exports_1, context_1) {
+$__System.register('78', ['76'], function (exports_1, context_1) {
+    "use strict";
+
+    var __moduleName = context_1 && context_1.id;
+    var PIXIApplication_1;
+    var Loader;
+    return {
+        setters: [function (PIXIApplication_1_1) {
+            PIXIApplication_1 = PIXIApplication_1_1;
+        }],
+        execute: function () {
+            Loader = function () {
+                function Loader() {
+                    this.percent = 0;
+                    this.hasResources = false;
+                    this.hasSoundResources = false;
+                    this.numSounds = 0;
+                    this.loaderProgress = 0;
+                    this.app = PIXIApplication_1.PIXIApplication.getInstance();
+                    PIXI.loader.on('progress', this.onLoadProgress, this);
+                    PIXI.loader.on('complete', this.onLoadComplete, this);
+                }
+                Loader.prototype.load = function (resource) {
+                    PIXI.loader.add(resource.id, this.getResolutionBasedUrl(resource));
+                    this.hasResources = true;
+                };
+                Loader.prototype.loadSound = function (resource) {
+                    var _this = this;
+                    this.hasResources = true;
+                    this.hasSoundResources = true;
+                    this.numSounds++;
+                    var res = resource;
+                    if (resource.extensions != null && resource.extensions !== undefined) {
+                        var src_1 = resource.src;
+                        if (res.src.indexOf('.') > 0) {
+                            var aSrc = res.src.split('.');
+                            var ext = aSrc.pop();
+                            src_1 = aSrc.join('');
+                        }
+                        var srclist_1 = [];
+                        resource.extensions.forEach(function (extension) {
+                            var url = src_1 + '.' + extension;
+                            if (srclist_1.indexOf(url) === -1) {
+                                srclist_1.push(url);
+                            }
+                        });
+                        res.src = srclist_1;
+                    }
+                    res.onload = function () {
+                        _this.onSoundLoadComplete();
+                    };
+                    this.app.sound.add(res.id, new Howl(res));
+                };
+                Loader.prototype.start = function () {
+                    PIXI.loader.load();
+                };
+                Loader.prototype.onLoadProgress = function (loader, resource) {
+                    var progress = loader ? loader.progress : this.loaderProgress;
+                    this.loaderProgress = progress;
+                    this.percent = progress - Loader.DEFAULT_SOUND_PERCENTAGE * this.numSounds;
+                };
+                Loader.prototype.onLoadComplete = function (complete) {
+                    this.hasResources = false;
+                    if (this.numSounds === 0) {
+                        this.app.state.loadComplete();
+                    }
+                };
+                Loader.prototype.onSoundLoadComplete = function () {
+                    this.numSounds--;
+                    this.onLoadProgress(null);
+                    if (this.numSounds === 0) {
+                        this.hasSoundResources = false;
+                        this.app.state.loadComplete();
+                    }
+                };
+                Loader.prototype.getResolutionBasedUrl = function (resource) {
+                    if (this.app.resolution === 2) {
+                        return resource.hdurl || resource.url;
+                    }
+                    return resource.url;
+                };
+                Loader.getTextureById = function (atlasId, textureId) {
+                    return PIXI.loader.resources[atlasId].textures[textureId];
+                };
+                Loader.DEFAULT_SOUND_PERCENTAGE = 5;
+                Loader.HOWLER_DEFAULT_RESOURCE = { src: null, autoplay: false, loop: false, volume: 1.0 };
+                return Loader;
+            }();
+            exports_1("Loader", Loader);
+        }
+    };
+});
+$__System.register('79', ['7a'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -14702,7 +14743,7 @@ $__System.register('7a', ['7b'], function (exports_1, context_1) {
         }
     };
 });
-$__System.register("7c", ["7d"], function (exports_1, context_1) {
+$__System.register("7b", ["7c"], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -14790,7 +14831,7 @@ $__System.register("7c", ["7d"], function (exports_1, context_1) {
         }
     };
 });
-$__System.register("7b", ["7d"], function (exports_1, context_1) {
+$__System.register("7a", ["7c"], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -14842,7 +14883,7 @@ $__System.register("7b", ["7d"], function (exports_1, context_1) {
         }
     };
 });
-$__System.register("7e", [], function (exports_1, context_1) {
+$__System.register("7d", [], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -14851,25 +14892,25 @@ $__System.register("7e", [], function (exports_1, context_1) {
         setters: [],
         execute: function () {
             Notification = function () {
-                function Notification(_name, _body) {
-                    if (_body === void 0) {
-                        _body = null;
+                function Notification(name, body) {
+                    if (body === void 0) {
+                        body = null;
                     }
-                    this._name = _name;
-                    this._body = _body;
+                    this.name = name;
+                    this.body = body;
                 }
                 Notification.prototype.getName = function () {
-                    return this._name;
+                    return this.name;
                 };
                 Notification.prototype.setBody = function (body) {
-                    this._body = body;
+                    this.body = body;
                 };
                 Notification.prototype.getBody = function () {
-                    return this._body;
+                    return this.body;
                 };
                 Notification.prototype.destroy = function () {
-                    this._body = null;
-                    this._name = null;
+                    this.body = null;
+                    this.name = null;
                 };
                 return Notification;
             }();
@@ -14877,7 +14918,7 @@ $__System.register("7e", [], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('7d', ['64'], function (exports_1, context_1) {
+$__System.register('7c', ['64'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -15051,7 +15092,7 @@ $__System.register('7d', ['64'], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('64', ['7a', '7c', '7b', '7e', '7d'], function (exports_1, context_1) {
+$__System.register('64', ['79', '7b', '7a', '7d', '7c'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -15080,7 +15121,7 @@ $__System.register('64', ['7a', '7c', '7b', '7e', '7d'], function (exports_1, co
         execute: function () {}
     };
 });
-$__System.register('78', ['64', '6f', '57'], function (exports_1, context_1) {
+$__System.register('76', ['64', '6d', '57'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -15168,6 +15209,7 @@ $__System.register('78', ['64', '6f', '57'], function (exports_1, context_1) {
                 PIXIApplication.prototype.setupApp = function () {
                     this.camera = new core_1.Camera();
                     this.asset = new core_1.Loader();
+                    this.sound = new core_1.SoundManager();
                     this.state = new core_1.StateManager();
                     this.addToGame = new core_1.Factory();
                     this.addToUI = new core_1.Factory(this.ui);
@@ -15220,55 +15262,57 @@ $__System.register('78', ['64', '6f', '57'], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('7f', ['78'], function (exports_1, context_1) {
+$__System.register("7e", ["76"], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
     var PIXIApplication_1;
-    var Loader;
+    var SoundManager;
     return {
         setters: [function (PIXIApplication_1_1) {
             PIXIApplication_1 = PIXIApplication_1_1;
         }],
         execute: function () {
-            Loader = function () {
-                function Loader() {
-                    this.percent = 0;
-                    this.hasResources = false;
+            SoundManager = function () {
+                function SoundManager() {
+                    this.lookup = {};
                     this.app = PIXIApplication_1.PIXIApplication.getInstance();
-                    PIXI.loader.on('progress', this.onLoadProgress, this);
-                    PIXI.loader.on('complete', this.onLoadComplete, this);
                 }
-                Loader.prototype.load = function (resource) {
-                    PIXI.loader.add(resource.id, this.getResolutionBasedUrl(resource));
-                    this.hasResources = true;
+                SoundManager.prototype.add = function (id, howl) {
+                    this.lookup[id] = howl;
+                    return howl;
                 };
-                Loader.prototype.start = function () {
-                    PIXI.loader.load();
-                };
-                Loader.prototype.onLoadProgress = function (loader, resource) {
-                    this.percent = loader.progress;
-                };
-                Loader.prototype.onLoadComplete = function (complete) {
-                    this.hasResources = false;
-                    this.app.state.loadComplete();
-                };
-                Loader.prototype.getResolutionBasedUrl = function (resource) {
-                    if (this.app.resolution === 2) {
-                        return resource.hdurl || resource.url;
+                SoundManager.prototype.play = function (id, marker) {
+                    if (marker === void 0) {
+                        marker = null;
                     }
-                    return resource.url;
+                    if (marker) {
+                        return this.lookup[id].play(marker);
+                    } else {
+                        return this.lookup[id].play();
+                    }
                 };
-                Loader.getTextureById = function (atlasId, textureId) {
-                    return PIXI.loader.resources[atlasId].textures[textureId];
+                SoundManager.prototype.loop = function (id) {
+                    this.lookup[id].loop();
+                    return this.lookup[id];
                 };
-                return Loader;
+                SoundManager.prototype.pause = function (id, marker) {
+                    if (marker === void 0) {
+                        marker = null;
+                    }
+                    if (marker) {
+                        return this.lookup[id].pause(marker);
+                    } else {
+                        return this.lookup[id].pause();
+                    }
+                };
+                return SoundManager;
             }();
-            exports_1("Loader", Loader);
+            exports_1("SoundManager", SoundManager);
         }
     };
 });
-$__System.register('6f', ['78', '75', '76', '77', '79', '7f'], function (exports_1, context_1) {
+$__System.register('6d', ['76', '73', '74', '75', '77', '78', '7e'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -15296,13 +15340,18 @@ $__System.register('6f', ['78', '75', '76', '77', '79', '7f'], function (exports
         }, function (Loader_1_1) {
             exports_1({
                 "Loader": Loader_1_1["Loader"],
-                "ILoaderResource": Loader_1_1["ILoaderResource"]
+                "ILoaderResource": Loader_1_1["ILoaderResource"],
+                "ISoundResource": Loader_1_1["ISoundResource"]
+            });
+        }, function (SoundManager_1_1) {
+            exports_1({
+                "SoundManager": SoundManager_1_1["SoundManager"]
             });
         }],
         execute: function () {}
     };
 });
-$__System.register('80', ['6f'], function (exports_1, context_1) {
+$__System.register('7f', ['6d'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -15345,7 +15394,7 @@ $__System.register('80', ['6f'], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('57', ['6e', '70', '71', '72', '73', '74', '80'], function (exports_1, context_1) {
+$__System.register('57', ['6c', '6e', '6f', '70', '71', '72', '7f'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -15382,7 +15431,7 @@ $__System.register('57', ['6e', '70', '71', '72', '73', '74', '80'], function (e
         execute: function () {}
     };
 });
-$__System.register('81', ['5a', '58', '57'], function (exports_1, context_1) {
+$__System.register('80', ['5a', '58', '57'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -15456,7 +15505,7 @@ $__System.register('81', ['5a', '58', '57'], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('82', ['57', '5a', '58', '66', '81'], function (exports_1, context_1) {
+$__System.register('81', ['57', '5a', '58', '66', '80'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -15495,6 +15544,8 @@ $__System.register('82', ['57', '5a', '58', '66', '81'], function (exports_1, co
                     console.log('splash preload');
                     this.app.asset.load(utils_2.Resources.UI_SPRITESHEET);
                     this.app.asset.load(utils_2.Resources.CAT_SPRITESHEET);
+                    this.app.asset.loadSound(utils_2.Resources.SFX);
+                    this.app.asset.loadSound(utils_2.Resources.MUSIC_ACCORDION);
                 };
                 Splash.prototype.build = function () {
                     console.log('splash build');
@@ -15544,6 +15595,7 @@ $__System.register('82', ['57', '5a', '58', '66', '81'], function (exports_1, co
                 Splash.prototype.playerConnected = function (playerNum) {
                     var _this = this;
                     this.displays[playerNum - 1].setConnected();
+                    this.app.sound.play('sfx', Splash.CAT_SOUNDS[Math.floor(Math.random() * 3)]);
                     if (playerNum === Splash.DEBUG_PLAYERS || playerNum === 4) {
                         utils_1.Time.wait(1).then(function () {
                             _this.proceedToGame();
@@ -15567,13 +15619,14 @@ $__System.register('82', ['57', '5a', '58', '66', '81'], function (exports_1, co
                 };
                 Splash.DEBUG = false;
                 Splash.DEBUG_PLAYERS = 4;
+                Splash.CAT_SOUNDS = ['meow_cat', 'meow_kitten', 'tomcat'];
                 return Splash;
             }(display_1.State);
             exports_1("Splash", Splash);
         }
     };
 });
-$__System.register('83', ['62', '82'], function (exports_1, context_1) {
+$__System.register('82', ['62', '81'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -15590,7 +15643,7 @@ $__System.register('83', ['62', '82'], function (exports_1, context_1) {
         execute: function () {}
     };
 });
-$__System.register('84', ['6f', '63', '53', '83'], function (exports_1, context_1) {
+$__System.register('83', ['6d', '63', '53', '82'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -15634,7 +15687,7 @@ $__System.register('84', ['6f', '63', '53', '83'], function (exports_1, context_
         }
     };
 });
-$__System.register('85', [], function (exports_1, context_1) {
+$__System.register('84', [], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -15652,7 +15705,7 @@ $__System.register('85', [], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('86', [], function (exports_1, context_1) {
+$__System.register('85', [], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -15734,7 +15787,7 @@ $__System.register('86', [], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('87', [], function (exports_1, context_1) {
+$__System.register('86', [], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -15754,13 +15807,35 @@ $__System.register('87', [], function (exports_1, context_1) {
                     url: 'assets/img/spritesheet/ui.json',
                     hdurl: 'assets/img/spritesheet/ui@2x.json'
                 };
+                Resources.SFX = {
+                    id: 'sfx',
+                    src: 'assets/audio/sprite/sfx',
+                    extensions: ['ogg', 'webm', 'm4a'],
+                    sprite: {
+                        "air_horn": [0, 2768.9795918367345],
+                        "banana_peel_slip": [5000, 517.8004535147389],
+                        "fruit_collected": [8000, 1018.1179138321994],
+                        "meow_cat": [12000, 1251.7233560090694],
+                        "meow_kitten": [16000, 5000],
+                        "ship_bell": [23000, 3745.6689342403633],
+                        "slurp": [29000, 2914.195011337867],
+                        "slurping_2": [34000, 1212.2902494331101],
+                        "straw_slurp": [38000, 10193.560090702946],
+                        "tomcat": [51000, 1978.979591836733]
+                    }
+                };
+                Resources.MUSIC_ACCORDION = {
+                    id: 'music_accordion',
+                    src: 'assets/audio/sound/music_accordion.mp3',
+                    loop: true
+                };
                 return Resources;
             }();
             exports_1("Resources", Resources);
         }
     };
 });
-$__System.register('58', ['85', '86', '87'], function (exports_1, context_1) {
+$__System.register('58', ['84', '85', '86'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -15782,7 +15857,7 @@ $__System.register('58', ['85', '86', '87'], function (exports_1, context_1) {
     };
 });
 /// <reference path="../../typings/index.d.ts" />
-$__System.register('1', ['84', '58'], function (exports_1, context_1) {
+$__System.register('1', ['83', '58'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;

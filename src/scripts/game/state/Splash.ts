@@ -9,6 +9,9 @@ import {PlayerDisplay} from 'game/gameobjects/PlayerDisplay';
 export class Splash extends State {
     private static DEBUG: boolean = false;
     private static DEBUG_PLAYERS: number = 4;
+
+    private static CAT_SOUNDS: string[] = ['meow_cat', 'meow_kitten', 'tomcat'];
+
     private title: Sprite;
     private instructionsText: Text;
     private gameIdText: Text;
@@ -32,6 +35,8 @@ export class Splash extends State {
         console.log('splash preload');
         this.app.asset.load(Resources.UI_SPRITESHEET);
         this.app.asset.load(Resources.CAT_SPRITESHEET);
+        this.app.asset.loadSound(Resources.SFX);
+        this.app.asset.loadSound(Resources.MUSIC_ACCORDION);
     }
 
     public build(): void {
@@ -49,7 +54,7 @@ export class Splash extends State {
         this.gameIdBG = this.add.sprite(this.app.width * 0.5, this.app.height * 0.5 + 100, gfx.generateTexture(this.app.renderer, 1));
         this.gameIdBG.anchor.set(0.5);
 
-        gfx.destroy(); 
+        gfx.destroy();
 
         this.gameIdText = this.add.text(this.gameIdBG.x, this.gameIdBG.y, '12345', Fonts.STAG_SANS_BLACK, 46, Colours.BLUE_PRIMARY);
         this.gameIdText.anchor.set(0.5, 0.5);
@@ -91,6 +96,7 @@ export class Splash extends State {
 
     public playerConnected(playerNum: number): void {
         this.displays[playerNum - 1].setConnected();
+        this.app.sound.play('sfx', Splash.CAT_SOUNDS[Math.floor(Math.random() * 3)]);
 
         if (playerNum === Splash.DEBUG_PLAYERS || playerNum === 4) {
             Time.wait(1).then(() => { this.proceedToGame() });

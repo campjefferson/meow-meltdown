@@ -10,6 +10,8 @@ import {PlayMediator} from 'game/mediator/PlayMediator';
 export class Play extends State {
     private static PLAYER_COLORS: ('pink' | 'blue' | 'green' | 'orange')[] = ['pink', 'blue', 'green', 'orange'];
 
+    private static SLURP_SOUNDS: string[] = ['straw_slurp', 'slurping_2', 'slurp'];
+
     public player1: Cat;
     public player2: Cat;
     public player3: Cat;
@@ -104,6 +106,7 @@ export class Play extends State {
 
     public inputSwipe(playerNum: number, percent: number): void {
         this.players[playerNum - 1].lick(percent);
+        this.app.sound.play('sfx', Play.SLURP_SOUNDS[Math.floor(Math.random() * 3)]);
     }
 
     public update(): void {
@@ -128,6 +131,7 @@ export class Play extends State {
                 this.winner++;
                 this.players[i].canWin = false;
                 this.players[i].ribbon.setPosition(this.winner);
+                this.app.sound.play('sfx', 'fruit_collected');
             }
         }
     }

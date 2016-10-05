@@ -23,6 +23,7 @@
   "homepage": "https://bitbucket.org/cjsapptime/koodo-icecream-game#readme",
   "devDependencies": {
     "browser-sync": "^2.16.0",
+    "child_process": "^1.0.2",
     "cssnano": "^3.7.5",
     "glob": "^7.1.0",
     "gulp": "^3.9.1",
@@ -33,11 +34,13 @@
     "gulp-sourcemaps": "^1.6.0",
     "jspm": "^0.16.45",
     "less-plugin-autoprefix": "^1.5.1",
-    "run-sequence": "^1.2.2"
+    "run-sequence": "^1.2.2",
+    "yargs": "^6.0.0"
   },
   "jspm": {
     "dependencies": {
       "bluebird": "npm:bluebird@^3.4.6",
+      "howler": "npm:howler@^2.0.0",
       "socket.io": "npm:socket.io@^1.4.8",
       "socket.io-client": "npm:socket.io-client@^1.4.8"
     },
@@ -49,6 +52,7 @@
   "dependencies": {
     "express": "^4.14.0",
     "gsap": "^1.19.0",
+    "howler": "^2.0.0",
     "pixi.js": "^4.0.2",
     "socket.io": "^1.4.8",
     "underscore": "^1.8.3"

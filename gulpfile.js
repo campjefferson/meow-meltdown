@@ -9,9 +9,13 @@ var gulp = require("gulp"),
     gulp_jspm = require("gulp-jspm"),
     less = require('gulp-less'),
     LessPluginAutoPrefix = require('less-plugin-autoprefix'),
-    autoprefix = new LessPluginAutoPrefix({ browsers: ['last 2 versions'] }),
-    // workflow variables
-    dev = false,
+    autoprefix = new LessPluginAutoPrefix({
+        browsers: ['last 2 versions']
+    }),
+    process = require('child_process').exec,
+    argv = require('yargs').argv;
+// workflow variables
+dev = false,
     controller = false;
 
 // reload
@@ -34,7 +38,11 @@ gulp.task('scripts:controller', function (done) {
 gulp.task("jspm:game", function () {
     return gulp.src('./src/scripts/bootstrap-game.ts')
         .pipe(sourcemaps.init())
-        .pipe(gulp_jspm({ selfExecutingBundle: true, plugin: true, lowResSourceMaps: true }))
+        .pipe(gulp_jspm({
+            selfExecutingBundle: true,
+            plugin: true,
+            lowResSourceMaps: true
+        }))
         .pipe(concat('bundle.js'))
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest("./dist/assets/js"));
@@ -43,14 +51,23 @@ gulp.task("jspm:game", function () {
 gulp.task("jspm:controller", function () {
     return gulp.src('./src/scripts/bootstrap-controller.ts')
         .pipe(sourcemaps.init())
-        .pipe(gulp_jspm({ selfExecutingBundle: true, plugin: true, lowResSourceMaps: true }))
+        .pipe(gulp_jspm({
+            selfExecutingBundle: true,
+            plugin: true,
+            lowResSourceMaps: true
+        }))
         .pipe(concat('bundle-controller.js'))
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest("./dist/assets/js"));
 });
 
 gulp.task("vendor", function () {
-    return gulp.src(['./src/js/socket.io.js', './node_modules/gsap/src/minified/TweenMax.min.js', './node_modules/pixi.js/bin/pixi.js'])
+    return gulp.src([
+            './src/js/socket.io.js', 
+            './node_modules/howler/dist/howler.js',
+            './node_modules/gsap/src/minified/TweenMax.min.js', 
+            './node_modules/pixi.js/bin/pixi.js']
+        )
         .pipe(sourcemaps.init())
         .pipe(concat('vendor.js'))
         .pipe(sourcemaps.write('.'))
@@ -117,6 +134,29 @@ gulp.task('spritesheets', function (done) {
     return run('processspritesheets', 'reload', done);
 });
 
+gulp.task('processsounds', function () {
+    return gulp.src('src/audio/sound/*.{m4a,mp3,ogg,webm}')
+        .pipe(gulp.dest('./dist/assets/audio/sound'))
+});
+
+gulp.task('processaudiosprites', function () {
+    return gulp.src('src/audio/sprite/*.{json,m4a,mp3,ogg,webm}')
+        .pipe(gulp.dest('./dist/assets/audio/sprite'))
+});
+
+gulp.task('audiosprite', function (done) {
+    var path = argv.s === undefined ? 'sfx' : argv.s;
+    return process('audiosprite -f "howler" -c 1 -g 2 -r 44100 -e "m4a,ogg,webm" -b 48 -o src/audio/sprite/' + path + ' src/audio/sprite/' + path + '/*', function (err, stdout, stderr) {
+        console.log(stdout);
+        console.log(stderr);
+        done(err);
+    });
+});
+
+gulp.task('audio', function (done) {
+    return run('processaudiosprites', 'processsounds', 'reload', done);
+})
+
 // browsersync / server
 gulp.task('browser-sync', function () {
     browserSync.init({
@@ -156,7 +196,7 @@ gulp.task('default', function (done) {
 
 gulp.task('dev:game', function (done) {
     dev = true;
-    return run(['scripts:game', 'vendor', 'css', 'data', 'images', 'spritesheets', 'html', 'fonts'], 'browser-sync', 'watch:game', done);
+    return run(['scripts:game', 'vendor', 'css', 'data', 'images', 'spritesheets', 'audio', 'html', 'fonts'], 'browser-sync', 'watch:game', done);
 });
 
 gulp.task('dev:controller', function (done) {
@@ -170,9 +210,9 @@ gulp.task('build:controller', function (done) {
 });
 
 gulp.task('build:game', function (done) {
-    return run(['scripts:game', 'vendor', 'css', 'data', 'images', 'spritesheets', 'html', 'fonts'], done);
+    return run(['scripts:game', 'vendor', 'css', 'data', 'images', 'spritesheets', 'audio', 'html', 'fonts'], done);
 });
 
 gulp.task('build:all', function (done) {
-    return run(['scripts:game', 'scripts:controller', 'vendor', 'css', 'data', 'images', 'spritesheets', 'html', 'fonts'], done);
+    return run(['scripts:game', 'scripts:controller', 'vendor', 'css', 'data', 'images', 'spritesheets', 'audio', 'html', 'fonts'], done);
 });
