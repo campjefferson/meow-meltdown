@@ -103,6 +103,7 @@ export class ApplicationMediator extends BaseMediator {
     }
 
     public connectToGame(gameId: string) {
+
         console.log('socket emitting controller_connect_to_game', { id: gameId });
         this.socket.emit('controller_connect_to_game', { id: gameId })
     }
