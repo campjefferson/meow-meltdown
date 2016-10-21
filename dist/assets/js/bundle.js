@@ -8055,7 +8055,7 @@ $__System.register('60', ['5e', '5a', '57', '58', '5f'], function (exports_1, co
                 Cat.prototype.build = function () {
                     var atlasId = utils_3.Resources.CAT_SPRITESHEET.id;
                     this.neckTop = this.addChild(new display_1.Sprite(45, 180, atlasId, this.color + '/' + 'neck_top.png'));
-                    this.neck = this.addChild(new display_1.TileSprite(46, 208 + Cat.DEFAULT_NECK_HEIGHT, atlasId, this.color + '/' + 'neck_tile.png', 81.5, Cat.DEFAULT_NECK_HEIGHT));
+                    this.neck = this.addChild(new display_1.TileSprite(46, 208 + Cat.EXTENDED_NECK_HEIGHT, atlasId, this.color + '/' + 'neck_tile.png', 81.5, Cat.DEFAULT_NECK_HEIGHT));
                     this.neck.anchor.set(0, 1);
                     this.iceCream = this.addChild(new IceCream_1.IceCream(262, 148, this.color, Cat.DEFAULT_NECK_HEIGHT));
                     this.head = this.addChild(new display_1.Sprite(93, 186, atlasId, this.color + '/' + 'head.png'));

@@ -41,7 +41,7 @@ export class Cat extends Container {
     protected build(): void {
         const atlasId = Resources.CAT_SPRITESHEET.id;
         this.neckTop = this.addChild(new Sprite(45, 180, atlasId, this.color + '/' + 'neck_top.png')) as Sprite;
-        this.neck = this.addChild(new TileSprite(46, 208 + Cat.DEFAULT_NECK_HEIGHT, atlasId, this.color + '/' + 'neck_tile.png', 81.5, Cat.DEFAULT_NECK_HEIGHT)) as TileSprite;
+        this.neck = this.addChild(new TileSprite(46, 208 + Cat.EXTENDED_NECK_HEIGHT, atlasId, this.color + '/' + 'neck_tile.png', 81.5, Cat.DEFAULT_NECK_HEIGHT)) as TileSprite;
         this.neck.anchor.set(0, 1);
 
         this.iceCream = this.addChild(new IceCream(262, 148, this.color, Cat.DEFAULT_NECK_HEIGHT)) as IceCream;
