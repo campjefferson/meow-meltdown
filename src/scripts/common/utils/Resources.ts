@@ -1,4 +1,4 @@
-import {ILoaderResource, ISoundResource} from 'lightning/core';
+import { ILoaderResource, ISoundResource } from 'lightning/core';
 
 export class Resources {
     public static CAT_SPRITESHEET: ILoaderResource = {
@@ -14,7 +14,7 @@ export class Resources {
     }
 
     public static SFX: ISoundResource = {
-        id:'sfx',
+        id: 'sfx',
         src: 'assets/audio/sprite/sfx',
         extensions: ['ogg', 'webm', 'm4a'],
         sprite: {
@@ -61,9 +61,17 @@ export class Resources {
         }
     }
 
-    public static MUSIC_ACCORDION: ISoundResource = {
-        id:'music_accordion',
-        src: 'assets/audio/sound/music_accordion.mp3',
+    public static MUSIC_SPLASH: ISoundResource = {
+        id: 'music_splash',
+        src: 'assets/audio/sound/music_pinball.ogg',
+        volume: 0.4,
+        loop: true
+    }
+
+    public static MUSIC_GAME: ISoundResource = {
+        id: 'music_game',
+        src: 'assets/audio/sound/music_pinball_2.ogg',
+        volume: 0.3,
         loop: true
     }
 }

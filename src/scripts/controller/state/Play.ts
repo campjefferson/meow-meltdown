@@ -1,10 +1,10 @@
-import {Animator, Time} from 'bolt/utils';
-import {State, Text, Container, Sprite, Rope} from 'lightning/display';
-import {Animation} from 'lightning/utils';
-import {Fonts, Resources, Colours} from 'common/utils';
-import {Ribbon, Countdown, TextButton} from 'common/ui';
+import { Animator, Time } from 'bolt/utils';
+import { State, Text, Container, Sprite, Rope } from 'lightning/display';
+import { Animation } from 'lightning/utils';
+import { Fonts, Resources, Colours } from 'common/utils';
+import { Ribbon, Countdown, TextButton } from 'common/ui';
 
-import {PlayMediator} from 'controller/mediator/PlayMediator';
+import { PlayMediator } from 'controller/mediator/PlayMediator';
 
 export class Play extends State {
     private static COLOURS: ("pink" | "blue" | "green" | "orange")[] = ["pink", "blue", "green", "orange"];
@@ -19,6 +19,7 @@ export class Play extends State {
     private numTonguePoints: number;
     private tongueLength: number;
     private startGameButton: TextButton;
+    private restartGameButton: TextButton;
     private isSwiping: boolean = false;
     private swipeStart: PIXI.Point;
     private swipeEnd: PIXI.Point;
@@ -44,6 +45,7 @@ export class Play extends State {
 
         if (this.mediator.playerNum === 1) {
             this.addStartGameButton();
+            this.addRestartGameButton();
         }
     }
 
@@ -54,6 +56,16 @@ export class Play extends State {
                 this.start();
             });
         })
+    }
+
+    public restartGame(): void {
+
+    }
+
+    public gameOver(): void {
+        if (this.mediator.playerNum === 1) {
+            this.showRestartGameButton();
+        }
     }
 
     protected start(): void {
@@ -75,7 +87,7 @@ export class Play extends State {
         this.tonguePoints = this.getTonguePoints();
         this.numTonguePoints = this.tonguePoints.length;
 
-        this.tongueContainer = this.add.container(this.app.width * 0.5, this.app.height+ 20);
+        this.tongueContainer = this.add.container(this.app.width * 0.5, this.app.height + 20);
         this.tongueContainer.rotation = -90 * Math.PI / 180;
         this.tongue = this.add.rope(0, 0, Resources.UI_SPRITESHEET.id, 'tongue.png', this.tonguePoints, this.tongueContainer);//this.add.sprite(this.app.width * 0.5, this.app.height, Resources.UI_SPRITESHEET.id, 'tongue.png');
         this.tongue.width = this.app.height;
@@ -83,7 +95,7 @@ export class Play extends State {
         this.tongue.tint = Colours.getPrimary(Play.COLOURS[this.mediator.playerNum - 1]);
 
         Animator.from(this.inputArea, 0.5, { alpha: 0, ease: Sine.easeOut });
-        Animator.from(this.tongueContainer, 0.4, { y: this.app.height*2, ease: Sine.easeOut, delay: 0.3 });
+        Animator.from(this.tongueContainer, 0.4, { y: this.app.height * 2, ease: Sine.easeOut, delay: 0.3 });
     }
 
     protected getTonguePoints(): PIXI.Point[] {
@@ -95,7 +107,7 @@ export class Play extends State {
     }
 
     protected addStartGameButton(): void {
-        const startGameButton = this.add.existing(new TextButton(this.app.width * 0.5, this.app.height * 0.5, 'START GAME', Play.COLOURS[this.mediator.playerNum - 1], true, this.app.width -200)) as TextButton;
+        const startGameButton = this.add.existing(new TextButton(this.app.width * 0.5, this.app.height * 0.5, 'START GAME', Play.COLOURS[this.mediator.playerNum - 1], true, this.app.width - 200)) as TextButton;
         startGameButton.interactive = true;
         startGameButton.on('mousedown', this.onButtonPress, this)
             .on('touchstart', this.onButtonPress, this);
@@ -107,6 +119,21 @@ export class Play extends State {
             .on('touchendoutside', this.onButtonReleaseOutside, this);
 
         this.startGameButton = startGameButton;
+    }
+
+    protected addRestartGameButton(): void {
+        const restartGameButton = this.add.existing(new TextButton(-this.app.width, this.app.height * 0.5, 'NEW GAME', Play.COLOURS[this.mediator.playerNum - 1], true, this.app.width - 200)) as TextButton;
+        restartGameButton.interactive = true;
+        restartGameButton.on('mousedown', this.onButtonPress, this)
+            .on('touchstart', this.onButtonPress, this);
+
+        restartGameButton.on('mouseup', this.onButtonRelease, this)
+            .on('touchend', this.onButtonRelease, this);
+
+        restartGameButton.on('mouseupoutside', this.onButtonReleaseOutside, this)
+            .on('touchendoutside', this.onButtonReleaseOutside, this);
+
+        this.restartGameButton = restartGameButton;
     }
 
     protected onButtonPress(e: Event): void {
@@ -125,8 +152,14 @@ export class Play extends State {
             return;
         }
         btn.up(true);
-        this.mediator.sendStartGame();
-        this.hideStartGameButton();
+        if (btn === this.restartGameButton) {
+            this.mediator.sendRestartGame();
+            this.hideRestartGameButton();
+        } else {
+            this.mediator.sendStartGame();
+            this.hideStartGameButton();
+        }
+
     }
 
     protected onButtonReleaseOutside(e: Event): void {
@@ -141,6 +174,15 @@ export class Play extends State {
     protected hideStartGameButton(): void {
         this.startGameButton.interactive = false;
         Animator.to(this.startGameButton, 0.4, { x: -500, ease: Back.easeIn });
+    }
+
+    protected hideRestartGameButton(): void {
+        this.restartGameButton.interactive = false;
+        Animator.to(this.restartGameButton, 0.4, { x: -500, ease: Back.easeIn });
+    }
+
+    protected showRestartGameButton(): void {
+        Animator.to(this.restartGameButton, 0.4, { x: this.app.width * 0.5, ease: Back.easeOut });
     }
 
     protected enableInputArea(): void {

@@ -7499,11 +7499,17 @@ $__System.register('53', ['52', '54', '55'], function (exports_1, context_1) {
                     this.socket.on('player_connected', function (event) {
                         _this.handleSocketEvent('player_connected', event);
                     });
+                    this.socket.on('player_start_game', function (event) {
+                        _this.handleSocketEvent('player_start_game', event);
+                    });
                     this.socket.on('player_swipe', function (event) {
                         _this.handleSocketEvent('player_swipe', event);
                     });
                     this.socket.on('start_game', function (event) {
                         _this.handleSocketEvent('start_game', event);
+                    });
+                    this.socket.on('restart_game', function (event) {
+                        _this.handleSocketEvent('restart_game', event);
                     });
                     this.socket.on('start_countdown', function (event) {
                         _this.handleSocketEvent('start_countdown', event);
@@ -7512,7 +7518,7 @@ $__System.register('53', ['52', '54', '55'], function (exports_1, context_1) {
                     this.socket.emit('game_connect');
                 };
                 ApplicationMediator.prototype.listNotificationInterests = function () {
-                    return [utils_1.Notifications.INIT_COUNTDOWN];
+                    return [utils_1.Notifications.INIT_COUNTDOWN, utils_1.Notifications.GAME_OVER];
                 };
                 ApplicationMediator.prototype.handleNotification = function (note) {
                     var name = note.getName();
@@ -7520,6 +7526,9 @@ $__System.register('53', ['52', '54', '55'], function (exports_1, context_1) {
                     switch (name) {
                         case utils_1.Notifications.INIT_COUNTDOWN:
                             this.socket.emit('init_countdown');
+                            break;
+                        case utils_1.Notifications.GAME_OVER:
+                            this.socket.emit('game_over');
                             break;
                     }
                 };
@@ -7534,11 +7543,17 @@ $__System.register('53', ['52', '54', '55'], function (exports_1, context_1) {
                             this.appModel.numPlayers = event.player;
                             this.sendNotification(utils_1.Notifications.PLAYER_CONNECTED, event.player);
                             break;
+                        case 'player_start_game':
+                            this.sendNotification(utils_1.Notifications.PLAYER_START_GAME);
+                            break;
                         case 'player_swipe':
                             this.sendNotification(utils_1.Notifications.PLAYER_SWIPE, { playerNum: event.player, percent: event.percent });
                             break;
                         case 'start_game':
                             this.sendNotification(utils_1.Notifications.START_GAME);
+                            break;
+                        case 'restart_game':
+                            this.sendNotification(utils_1.Notifications.RESTART_GAME);
                             break;
                         case 'start_countdown':
                             this.sendNotification(utils_1.Notifications.START_COUNTDOWN);
@@ -7723,6 +7738,9 @@ $__System.register('59', ['5a', '58', '57'], function (exports_1, context_1) {
                 };
                 Ribbon.prototype.show = function () {
                     utils_1.Animator.to(this.scale, .3, { x: 1, y: 1, ease: Back.easeOut });
+                };
+                Ribbon.prototype.hide = function () {
+                    utils_1.Animator.to(this.scale, .3, { x: 0, y: 0, ease: Back.easeIn });
                 };
                 return Ribbon;
             }(display_1.Container);
@@ -7971,6 +7989,13 @@ $__System.register('5f', ['57', '5a', '58'], function (exports_1, context_1) {
                     this.totalPieces = this.stack.length;
                     this.remainingPieces = this.stack.length;
                 };
+                IceCream.prototype.reset = function () {
+                    var _this = this;
+                    this.stack.forEach(function (piece) {
+                        _this.removeChild(piece);
+                    });
+                    this.build();
+                };
                 IceCream.prototype.animateDrop = function () {
                     utils_1.Animator.to(this, 0.2, { y: "+=25", ease: Sine.easeIn });
                 };
@@ -8032,7 +8057,7 @@ $__System.register('60', ['5e', '5a', '57', '58', '5f'], function (exports_1, co
                     this.neckTop = this.addChild(new display_1.Sprite(45, 180, atlasId, this.color + '/' + 'neck_top.png'));
                     this.neck = this.addChild(new display_1.TileSprite(46, 208 + Cat.DEFAULT_NECK_HEIGHT, atlasId, this.color + '/' + 'neck_tile.png', 81.5, Cat.DEFAULT_NECK_HEIGHT));
                     this.neck.anchor.set(0, 1);
-                    this.iceCream = this.addChild(new IceCream_1.IceCream(262, 148, this.color, Cat.EXTENDED_NECK_HEIGHT));
+                    this.iceCream = this.addChild(new IceCream_1.IceCream(262, 148, this.color, Cat.DEFAULT_NECK_HEIGHT));
                     this.head = this.addChild(new display_1.Sprite(93, 186, atlasId, this.color + '/' + 'head.png'));
                     this.tongue = this.head.addChild(new display_1.MovieClip(143, 54, utils_1.Animation.generateFrames('tongue_', 0, 3)));
                     this.head.pivot.set(92, 186);
@@ -8068,7 +8093,7 @@ $__System.register('60', ['5e', '5a', '57', '58', '5f'], function (exports_1, co
                     }
                     this.lickEnabled = false;
                     var dist = Cat.EXTENDED_NECK_HEIGHT * (lickpercent * 0.01);
-                    var time = dist / 1200;
+                    var time = dist / 2000;
                     this.tongue.gotoAndStop(2);
                     utils_2.Animator.to(this.neck, time, { height: dist, ease: Sine.easeOut });
                     utils_2.Time.wait(time - 0.1).then(function () {
@@ -8096,6 +8121,12 @@ $__System.register('60', ['5e', '5a', '57', '58', '5f'], function (exports_1, co
                             _this.finished = true;
                         });
                     }
+                };
+                Cat.prototype.reset = function () {
+                    this.canWin = true;
+                    this.lickEnabled = true;
+                    this.finished = false;
+                    this.iceCream.reset();
                 };
                 Cat.DEFAULT_NECK_HEIGHT = 1;
                 Cat.EXTENDED_NECK_HEIGHT = 800;
@@ -8132,7 +8163,7 @@ $__System.register('61', ['54', '55'], function (exports_1, context_1) {
                 }
                 PlayMediator.prototype.onRegister = function () {};
                 PlayMediator.prototype.listNotificationInterests = function () {
-                    return [utils_1.Notifications.GAME_CONNECTED, utils_1.Notifications.START_COUNTDOWN, utils_1.Notifications.PLAYER_SWIPE];
+                    return [utils_1.Notifications.GAME_CONNECTED, utils_1.Notifications.START_COUNTDOWN, utils_1.Notifications.PLAYER_SWIPE, utils_1.Notifications.RESTART_GAME];
                 };
                 PlayMediator.prototype.handleNotification = function (note) {
                     var name = note.getName();
@@ -8144,7 +8175,13 @@ $__System.register('61', ['54', '55'], function (exports_1, context_1) {
                         case utils_1.Notifications.START_COUNTDOWN:
                             this.game.startCountdown();
                             break;
+                        case utils_1.Notifications.RESTART_GAME:
+                            this.game.restartGame();
+                            break;
                     }
+                };
+                PlayMediator.prototype.gameOver = function () {
+                    this.sendNotification(utils_1.Notifications.GAME_OVER);
                 };
                 PlayMediator.prototype.sendInitCountdown = function () {
                     this.sendNotification(utils_1.Notifications.INIT_COUNTDOWN);
@@ -8225,6 +8262,17 @@ $__System.register('62', ['57', '5a', '58', '5c', '60', '61'], function (exports
                     utils_1.Time.wait(3).then(function () {
                         _this.mediator.sendInitCountdown();
                     });
+                    this.app.sound.crossFadeBGTrack(utils_2.Resources.MUSIC_GAME.id);
+                };
+                Play.prototype.restartGame = function () {
+                    var _this = this;
+                    this.hasWinner = false;
+                    for (var i = 0; i < this.numPlayers; i++) {
+                        this.players[i].reset();
+                    }
+                    utils_1.Time.wait(3).then(function () {
+                        _this.mediator.sendInitCountdown();
+                    });
                 };
                 Play.prototype.startCountdown = function () {
                     var _this = this;
@@ -8264,7 +8312,7 @@ $__System.register('62', ['57', '5a', '58', '5c', '60', '61'], function (exports
                 };
                 Play.prototype.inputSwipe = function (playerNum, percent) {
                     this.players[playerNum - 1].lick(percent);
-                    this.app.sound.play('sfx', Play.SLURP_SOUNDS[Math.floor(Math.random() * 3)]);
+                    //this.app.sound.play('sfx', Play.SLURP_SOUNDS[Math.floor(Math.random() * 3)]);
                 };
                 Play.prototype.update = function () {
                     this.updatePlayers();
@@ -8272,7 +8320,7 @@ $__System.register('62', ['57', '5a', '58', '5c', '60', '61'], function (exports
                     if (!this.hasWinner && this.winner === this.numPlayers) {
                         // game over
                         this.hasWinner = true;
-                        console.log('game over');
+                        this.mediator.gameOver();
                     }
                 };
                 Play.prototype.updatePlayers = function () {
@@ -8412,8 +8460,11 @@ $__System.register('65', [], function (exports_1, context_1) {
                 function Notifications() {}
                 Notifications.GAME_CONNECTED = 'gameConnected';
                 Notifications.PLAYER_CONNECTED = 'playerConnected';
+                Notifications.PLAYER_START_GAME = 'playerStartGame';
                 Notifications.PLAYER_SWIPE = 'playerSwipe';
                 Notifications.START_GAME = 'startGame';
+                Notifications.RESTART_GAME = 'reStartGame';
+                Notifications.GAME_OVER = 'gameOver';
                 Notifications.INIT_COUNTDOWN = 'initCountdown';
                 Notifications.START_COUNTDOWN = 'startCountdown';
                 return Notifications;
@@ -15262,7 +15313,7 @@ $__System.register('76', ['64', '6d', '57'], function (exports_1, context_1) {
         }
     };
 });
-$__System.register("7e", ["76"], function (exports_1, context_1) {
+$__System.register('7e', ['76'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -15276,6 +15327,7 @@ $__System.register("7e", ["76"], function (exports_1, context_1) {
             SoundManager = function () {
                 function SoundManager() {
                     this.lookup = {};
+                    this._bgTrack = null;
                     this.app = PIXIApplication_1.PIXIApplication.getInstance();
                 }
                 SoundManager.prototype.add = function (id, howl) {
@@ -15287,10 +15339,11 @@ $__System.register("7e", ["76"], function (exports_1, context_1) {
                         marker = null;
                     }
                     if (marker) {
-                        return this.lookup[id].play(marker);
+                        this.lookup[id].play(marker);
                     } else {
-                        return this.lookup[id].play();
+                        this.lookup[id].play();
                     }
+                    return this.lookup[id];
                 };
                 SoundManager.prototype.loop = function (id) {
                     this.lookup[id].loop();
@@ -15301,10 +15354,29 @@ $__System.register("7e", ["76"], function (exports_1, context_1) {
                         marker = null;
                     }
                     if (marker) {
-                        return this.lookup[id].pause(marker);
+                        this.lookup[id].pause(marker);
                     } else {
-                        return this.lookup[id].pause();
+                        this.lookup[id].pause();
                     }
+                    return this.lookup[id];
+                };
+                SoundManager.prototype.setBgTrack = function (id) {
+                    this._bgTrack = this.play(id);
+                    return this._bgTrack;
+                };
+                SoundManager.prototype.crossFadeBGTrack = function (to, time) {
+                    if (time === void 0) {
+                        time = 300;
+                    }
+                    var oldBgTrack = this._bgTrack;
+                    this._bgTrack.fade(this._bgTrack.volume(), 0, time);
+                    this._bgTrack.on('fade', function (id) {
+                        oldBgTrack.stop();
+                    });
+                    var newBgTrack = this.play(to);
+                    newBgTrack.fade(0, newBgTrack.volume(), time);
+                    this._bgTrack = newBgTrack;
+                    return newBgTrack;
                 };
                 return SoundManager;
             }();
@@ -15545,7 +15617,8 @@ $__System.register('81', ['57', '5a', '58', '66', '80'], function (exports_1, co
                     this.app.asset.load(utils_2.Resources.UI_SPRITESHEET);
                     this.app.asset.load(utils_2.Resources.CAT_SPRITESHEET);
                     this.app.asset.loadSound(utils_2.Resources.SFX);
-                    this.app.asset.loadSound(utils_2.Resources.MUSIC_ACCORDION);
+                    this.app.asset.loadSound(utils_2.Resources.MUSIC_SPLASH);
+                    this.app.asset.loadSound(utils_2.Resources.MUSIC_GAME);
                 };
                 Splash.prototype.build = function () {
                     console.log('splash build');
@@ -15572,6 +15645,7 @@ $__System.register('81', ['57', '5a', '58', '66', '80'], function (exports_1, co
                     if (Splash.DEBUG) {
                         this.debugConnectPlayers();
                     }
+                    this.app.sound.setBgTrack(utils_2.Resources.MUSIC_SPLASH.id);
                 };
                 Splash.prototype.debugConnectPlayers = function () {
                     var _this = this;
@@ -15824,9 +15898,16 @@ $__System.register('86', [], function (exports_1, context_1) {
                         "tomcat": [51000, 1978.979591836733]
                     }
                 };
-                Resources.MUSIC_ACCORDION = {
-                    id: 'music_accordion',
-                    src: 'assets/audio/sound/music_accordion.mp3',
+                Resources.MUSIC_SPLASH = {
+                    id: 'music_splash',
+                    src: 'assets/audio/sound/music_pinball.ogg',
+                    volume: 0.4,
+                    loop: true
+                };
+                Resources.MUSIC_GAME = {
+                    id: 'music_game',
+                    src: 'assets/audio/sound/music_pinball_2.ogg',
+                    volume: 0.3,
                     loop: true
                 };
                 return Resources;

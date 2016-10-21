@@ -135,12 +135,12 @@ gulp.task('spritesheets', function (done) {
 });
 
 gulp.task('processsounds', function () {
-    return gulp.src('src/audio/sound/*.{m4a,mp3,ogg,webm}')
+    return gulp.src('./src/audio/sound/*.{m4a,mp3,ogg,webm}')
         .pipe(gulp.dest('./dist/assets/audio/sound'))
 });
 
 gulp.task('processaudiosprites', function () {
-    return gulp.src('src/audio/sprite/*.{json,m4a,mp3,ogg,webm}')
+    return gulp.src('./src/audio/sprite/*.{json,m4a,mp3,ogg,webm}')
         .pipe(gulp.dest('./dist/assets/audio/sprite'))
 });
 
@@ -191,7 +191,7 @@ gulp.task('watch:controller', function (done) {
 // cli
 gulp.task('default', function (done) {
     dev = true;
-    return run(['scripts:game', 'vendor', 'css', 'data', 'images', 'spritesheets', 'html', 'fonts'], 'browser-sync', 'watch:game', done);
+    return run(['scripts:game', 'vendor', 'css', 'data', 'images', 'spritesheets', 'audio', 'html', 'fonts'], 'browser-sync', 'watch:game', done);
 });
 
 gulp.task('dev:game', function (done) {

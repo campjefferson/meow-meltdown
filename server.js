@@ -71,6 +71,11 @@ io.on('connection', function (socket, options) {
             emitToAllGameControllers(game.id, 'start_game');
         });
 
+        socket.on('player_restart_game', function () {
+            game.socket.emit('restart_game');
+            emitToAllGameControllers(game.id, 'restart_game');
+        });
+
         socket.on('player_swipe', function (data) {
             game.socket.emit('player_swipe', { player: data.player, percent: data.percent });
         });

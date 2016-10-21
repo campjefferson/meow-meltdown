@@ -1,10 +1,10 @@
-import {State, Text, Sprite} from 'lightning/display';
-import {Animation} from 'lightning/utils';
-import {Animator, Time} from 'bolt/utils';
+import { State, Text, Sprite } from 'lightning/display';
+import { Animation } from 'lightning/utils';
+import { Animator, Time } from 'bolt/utils';
 
-import {Fonts, Resources, Colours} from 'common/utils';
-import {SplashMediator} from 'game/mediator/SplashMediator';
-import {PlayerDisplay} from 'game/gameobjects/PlayerDisplay';
+import { Fonts, Resources, Colours } from 'common/utils';
+import { SplashMediator } from 'game/mediator/SplashMediator';
+import { PlayerDisplay } from 'game/gameobjects/PlayerDisplay';
 
 export class Splash extends State {
     private static DEBUG: boolean = false;
@@ -36,7 +36,8 @@ export class Splash extends State {
         this.app.asset.load(Resources.UI_SPRITESHEET);
         this.app.asset.load(Resources.CAT_SPRITESHEET);
         this.app.asset.loadSound(Resources.SFX);
-        this.app.asset.loadSound(Resources.MUSIC_ACCORDION);
+        this.app.asset.loadSound(Resources.MUSIC_SPLASH);
+        this.app.asset.loadSound(Resources.MUSIC_GAME);
     }
 
     public build(): void {
@@ -74,6 +75,8 @@ export class Splash extends State {
         if (Splash.DEBUG) {
             this.debugConnectPlayers();
         }
+
+        this.app.sound.setBgTrack(Resources.MUSIC_SPLASH.id);
     }
 
     private debugConnectPlayers(): void {

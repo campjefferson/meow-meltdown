@@ -1,8 +1,8 @@
-import {INotification} from 'bolt/interfaces';
+import { INotification } from 'bolt/interfaces';
 
-import {BaseMediator} from 'controller/mediator/BaseMediator';
-import {Play} from 'controller/state/Play';
-import {Notifications} from 'controller/utils';
+import { BaseMediator } from 'controller/mediator/BaseMediator';
+import { Play } from 'controller/state/Play';
+import { Notifications } from 'controller/utils';
 
 export class PlayMediator extends BaseMediator {
     public static MEDIATOR_NAME: string = 'PlayMediator';
@@ -13,7 +13,9 @@ export class PlayMediator extends BaseMediator {
         return [
             Notifications.PLAYER_SWIPE,
             Notifications.START_COUNTDOWN,
-            Notifications.START_GAME
+            Notifications.START_GAME,
+            Notifications.RESTART_GAME,
+            Notifications.GAME_OVER
         ]
     }
 
@@ -27,6 +29,12 @@ export class PlayMediator extends BaseMediator {
             case Notifications.START_COUNTDOWN:
                 this.controller.startCountdown();
                 break;
+            case Notifications.RESTART_GAME:
+                this.controller.restartGame();
+                break;
+            case Notifications.GAME_OVER:
+                this.controller.gameOver();
+                break;
         }
     }
 
@@ -36,6 +44,10 @@ export class PlayMediator extends BaseMediator {
 
     public sendStartGame() {
         this.sendNotification(Notifications.PLAYER_START_GAME);
+    }
+
+    public sendRestartGame() {
+        this.sendNotification(Notifications.PLAYER_RESTART_GAME);
     }
 
     get controller(): Play {

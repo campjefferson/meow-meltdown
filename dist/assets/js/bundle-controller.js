@@ -41,13 +41,19 @@ $__System.register('2', ['3', '4'], function (exports_1, context_1) {
                     this.socket.on('start_game', function (event) {
                         _this.handleSocketEvent('start_game', event);
                     });
+                    this.socket.on('game_over', function (event) {
+                        _this.handleSocketEvent('game_over', event);
+                    });
+                    this.socket.on('restart_game', function (event) {
+                        _this.handleSocketEvent('restart_game', event);
+                    });
                     this.socket.on('start_countdown', function (event) {
                         _this.handleSocketEvent('start_countdown', event);
                     });
                     this.socket.emit('controller_connect');
                 };
                 ApplicationMediator.prototype.listNotificationInterests = function () {
-                    return [utils_1.Notifications.REQUEST_GAMES_LIST, utils_1.Notifications.RECEIVED_GAMES_LIST, utils_1.Notifications.CONNECT_TO_GAME, utils_1.Notifications.CONNECTED_TO_GAME, utils_1.Notifications.PLAYER_SWIPE, utils_1.Notifications.PLAYER_START_GAME, utils_1.Notifications.START_GAME];
+                    return [utils_1.Notifications.REQUEST_GAMES_LIST, utils_1.Notifications.RECEIVED_GAMES_LIST, utils_1.Notifications.CONNECT_TO_GAME, utils_1.Notifications.CONNECTED_TO_GAME, utils_1.Notifications.PLAYER_SWIPE, utils_1.Notifications.PLAYER_START_GAME, utils_1.Notifications.PLAYER_RESTART_GAME, utils_1.Notifications.START_GAME];
                 };
                 ApplicationMediator.prototype.handleNotification = function (note) {
                     var name = note.getName();
@@ -65,6 +71,9 @@ $__System.register('2', ['3', '4'], function (exports_1, context_1) {
                         case utils_1.Notifications.PLAYER_START_GAME:
                             this.sendPlayerStartGame();
                             break;
+                        case utils_1.Notifications.PLAYER_RESTART_GAME:
+                            this.sendPlayerRestartGame();
+                            break;
                     }
                 };
                 ApplicationMediator.prototype.handleSocketEvent = function (type, event) {
@@ -80,10 +89,17 @@ $__System.register('2', ['3', '4'], function (exports_1, context_1) {
                             this.sendNotification(utils_1.Notifications.RECEIVED_GAMES_LIST, this.appModel.gamesList);
                             break;
                         case 'start_game':
+                            console.log('start game!');
                             this.sendNotification(utils_1.Notifications.START_GAME);
+                            break;
+                        case 'restart_game':
+                            this.sendNotification(utils_1.Notifications.RESTART_GAME);
                             break;
                         case 'start_countdown':
                             this.sendNotification(utils_1.Notifications.START_COUNTDOWN);
+                            break;
+                        case 'game_over':
+                            this.sendNotification(utils_1.Notifications.GAME_OVER);
                             break;
                     }
                 };
@@ -95,6 +111,10 @@ $__System.register('2', ['3', '4'], function (exports_1, context_1) {
                 };
                 ApplicationMediator.prototype.sendPlayerStartGame = function () {
                     this.socket.emit('player_start_game');
+                };
+                ApplicationMediator.prototype.sendPlayerRestartGame = function () {
+                    console.log('sent restart game');
+                    this.socket.emit('player_restart_game');
                 };
                 ApplicationMediator.prototype.connectToGame = function (gameId) {
                     console.log('socket emitting controller_connect_to_game', { id: gameId });
@@ -478,6 +498,9 @@ $__System.register('c', ['8', 'a', '7'], function (exports_1, context_1) {
                 Ribbon.prototype.show = function () {
                     utils_1.Animator.to(this.scale, .3, { x: 1, y: 1, ease: Back.easeOut });
                 };
+                Ribbon.prototype.hide = function () {
+                    utils_1.Animator.to(this.scale, .3, { x: 0, y: 0, ease: Back.easeIn });
+                };
                 return Ribbon;
             }(display_1.Container);
             exports_1("Ribbon", Ribbon);
@@ -551,53 +574,7 @@ $__System.register("d", [], function (exports_1, context_1) {
         }
     };
 });
-$__System.register("e", [], function (exports_1, context_1) {
-    "use strict";
-
-    var __moduleName = context_1 && context_1.id;
-    var Logger;
-    return {
-        setters: [],
-        execute: function () {
-            Logger = function () {
-                function Logger() {}
-                Logger.log = function (instance) {
-                    var args = [];
-                    for (var _i = 1; _i < arguments.length; _i++) {
-                        args[_i - 1] = arguments[_i];
-                    }
-                    if (!Logger.enabled) {
-                        return;
-                    }
-                    if (instance && instance.constructor) {
-                        args.unshift(instance.constructor.toString().match(/\w+/g)[1] + ' ::');
-                    }
-                    return console.log.apply(console, args);
-                };
-                Logger.enabled = true;
-                return Logger;
-            }();
-            exports_1("Logger", Logger);
-        }
-    };
-});
-$__System.register("f", [], function (exports_1, context_1) {
-    "use strict";
-
-    var __moduleName = context_1 && context_1.id;
-    var Notifications;
-    return {
-        setters: [],
-        execute: function () {
-            Notifications = function () {
-                function Notifications() {}
-                return Notifications;
-            }();
-            exports_1("Notifications", Notifications);
-        }
-    };
-});
-$__System.register("10", ["11"], function (exports_1, context_1) {
+$__System.register("e", ["f"], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -665,7 +642,7 @@ $__System.register("10", ["11"], function (exports_1, context_1) {
         }
     };
 });
-$__System.registerDynamic("12", [], false, function ($__require, $__exports, $__module) {
+$__System.registerDynamic("10", [], false, function ($__require, $__exports, $__module) {
     var _retrieveGlobal = $__System.get("@@global-helpers").prepareGlobal($__module.id, null, null);
 
     (function ($__global) {
@@ -5980,14 +5957,14 @@ $__System.registerDynamic("12", [], false, function ($__require, $__exports, $__
 
     return _retrieveGlobal();
 });
-$__System.registerDynamic("11", ["12"], true, function ($__require, exports, module) {
+$__System.registerDynamic("f", ["10"], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
-  module.exports = $__require("12");
+  module.exports = $__require("10");
   return module.exports;
 });
-$__System.register("13", ["11"], function (exports_1, context_1) {
+$__System.register("11", ["f"], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -6030,7 +6007,7 @@ $__System.register("13", ["11"], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('8', ['d', 'e', 'f', '10', '13'], function (exports_1, context_1) {
+$__System.register('8', ['d', 'e', '11'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -6038,14 +6015,6 @@ $__System.register('8', ['d', 'e', 'f', '10', '13'], function (exports_1, contex
         setters: [function (Device_1_1) {
             exports_1({
                 "Device": Device_1_1["Device"]
-            });
-        }, function (Logger_1_1) {
-            exports_1({
-                "Logger": Logger_1_1["Logger"]
-            });
-        }, function (Notifications_1_1) {
-            exports_1({
-                "Notifications": Notifications_1_1["Notifications"]
             });
         }, function (Animator_1_1) {
             exports_1({
@@ -6059,7 +6028,7 @@ $__System.register('8', ['d', 'e', 'f', '10', '13'], function (exports_1, contex
         execute: function () {}
     };
 });
-$__System.register("14", ["15"], function (exports_1, context_1) {
+$__System.register("12", ["13"], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -6124,7 +6093,7 @@ $__System.register("14", ["15"], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('16', ['15'], function (exports_1, context_1) {
+$__System.register('14', ['13'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -6176,7 +6145,7 @@ $__System.register('16', ['15'], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('17', ['15'], function (exports_1, context_1) {
+$__System.register('15', ['13'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -6219,7 +6188,7 @@ $__System.register('17', ['15'], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('18', ['15'], function (exports_1, context_1) {
+$__System.register('16', ['13'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -6268,7 +6237,7 @@ $__System.register('18', ['15'], function (exports_1, context_1) {
         }
     };
 });
-$__System.register("19", [], function (exports_1, context_1) {
+$__System.register("17", [], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -6302,7 +6271,7 @@ $__System.register("19", [], function (exports_1, context_1) {
         }
     };
 });
-$__System.register("1a", ["15"], function (exports_1, context_1) {
+$__System.register("18", ["13"], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -6354,7 +6323,7 @@ $__System.register("1a", ["15"], function (exports_1, context_1) {
         }
     };
 });
-$__System.register("1b", [], function (exports_1, context_1) {
+$__System.register("19", [], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -6363,7 +6332,7 @@ $__System.register("1b", [], function (exports_1, context_1) {
         execute: function () {}
     };
 });
-$__System.register('1c', ['15', '7'], function (exports_1, context_1) {
+$__System.register('1a', ['13', '7'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -6460,7 +6429,7 @@ $__System.register('1c', ['15', '7'], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('1d', ['1e'], function (exports_1, context_1) {
+$__System.register('1b', ['1c'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -6529,7 +6498,7 @@ $__System.register('1d', ['1e'], function (exports_1, context_1) {
         }
     };
 });
-$__System.register("1f", ["1e"], function (exports_1, context_1) {
+$__System.register("1d", ["1c"], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -6611,7 +6580,99 @@ $__System.register("1f", ["1e"], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('1e', ['20', '15', '7'], function (exports_1, context_1) {
+$__System.register('1e', ['1c'], function (exports_1, context_1) {
+    "use strict";
+
+    var __moduleName = context_1 && context_1.id;
+    var PIXIApplication_1;
+    var Loader;
+    return {
+        setters: [function (PIXIApplication_1_1) {
+            PIXIApplication_1 = PIXIApplication_1_1;
+        }],
+        execute: function () {
+            Loader = function () {
+                function Loader() {
+                    this.percent = 0;
+                    this.hasResources = false;
+                    this.hasSoundResources = false;
+                    this.numSounds = 0;
+                    this.loaderProgress = 0;
+                    this.app = PIXIApplication_1.PIXIApplication.getInstance();
+                    PIXI.loader.on('progress', this.onLoadProgress, this);
+                    PIXI.loader.on('complete', this.onLoadComplete, this);
+                }
+                Loader.prototype.load = function (resource) {
+                    PIXI.loader.add(resource.id, this.getResolutionBasedUrl(resource));
+                    this.hasResources = true;
+                };
+                Loader.prototype.loadSound = function (resource) {
+                    var _this = this;
+                    this.hasResources = true;
+                    this.hasSoundResources = true;
+                    this.numSounds++;
+                    var res = resource;
+                    if (resource.extensions != null && resource.extensions !== undefined) {
+                        var src_1 = resource.src;
+                        if (res.src.indexOf('.') > 0) {
+                            var aSrc = res.src.split('.');
+                            var ext = aSrc.pop();
+                            src_1 = aSrc.join('');
+                        }
+                        var srclist_1 = [];
+                        resource.extensions.forEach(function (extension) {
+                            var url = src_1 + '.' + extension;
+                            if (srclist_1.indexOf(url) === -1) {
+                                srclist_1.push(url);
+                            }
+                        });
+                        res.src = srclist_1;
+                    }
+                    res.onload = function () {
+                        _this.onSoundLoadComplete();
+                    };
+                    this.app.sound.add(res.id, new Howl(res));
+                };
+                Loader.prototype.start = function () {
+                    PIXI.loader.load();
+                };
+                Loader.prototype.onLoadProgress = function (loader, resource) {
+                    var progress = loader ? loader.progress : this.loaderProgress;
+                    this.loaderProgress = progress;
+                    this.percent = progress - Loader.DEFAULT_SOUND_PERCENTAGE * this.numSounds;
+                };
+                Loader.prototype.onLoadComplete = function (complete) {
+                    this.hasResources = false;
+                    if (this.numSounds === 0) {
+                        this.app.state.loadComplete();
+                    }
+                };
+                Loader.prototype.onSoundLoadComplete = function () {
+                    this.numSounds--;
+                    this.onLoadProgress(null);
+                    if (this.numSounds === 0) {
+                        this.hasSoundResources = false;
+                        this.app.state.loadComplete();
+                    }
+                };
+                Loader.prototype.getResolutionBasedUrl = function (resource) {
+                    if (this.app.resolution === 2) {
+                        return resource.hdurl || resource.url;
+                    }
+                    return resource.url;
+                };
+                Loader.getTextureById = function (atlasId, textureId) {
+                    return PIXI.loader.resources[atlasId].textures[textureId];
+                };
+                Loader.DEFAULT_SOUND_PERCENTAGE = 5;
+                Loader.HOWLER_DEFAULT_RESOURCE = { src: null, autoplay: false, loop: false, volume: 1.0 };
+                return Loader;
+            }();
+            exports_1("Loader", Loader);
+        }
+    };
+});
+$__System.register('1c', ['1f', '13', '7'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -6699,6 +6760,7 @@ $__System.register('1e', ['20', '15', '7'], function (exports_1, context_1) {
                 PIXIApplication.prototype.setupApp = function () {
                     this.camera = new core_1.Camera();
                     this.asset = new core_1.Loader();
+                    this.sound = new core_1.SoundManager();
                     this.state = new core_1.StateManager();
                     this.addToGame = new core_1.Factory();
                     this.addToUI = new core_1.Factory(this.ui);
@@ -6751,55 +6813,78 @@ $__System.register('1e', ['20', '15', '7'], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('21', ['1e'], function (exports_1, context_1) {
+$__System.register('20', ['1c'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
     var PIXIApplication_1;
-    var Loader;
+    var SoundManager;
     return {
         setters: [function (PIXIApplication_1_1) {
             PIXIApplication_1 = PIXIApplication_1_1;
         }],
         execute: function () {
-            Loader = function () {
-                function Loader() {
-                    this.percent = 0;
-                    this.hasResources = false;
+            SoundManager = function () {
+                function SoundManager() {
+                    this.lookup = {};
+                    this._bgTrack = null;
                     this.app = PIXIApplication_1.PIXIApplication.getInstance();
-                    PIXI.loader.on('progress', this.onLoadProgress, this);
-                    PIXI.loader.on('complete', this.onLoadComplete, this);
                 }
-                Loader.prototype.load = function (resource) {
-                    PIXI.loader.add(resource.id, this.getResolutionBasedUrl(resource));
-                    this.hasResources = true;
+                SoundManager.prototype.add = function (id, howl) {
+                    this.lookup[id] = howl;
+                    return howl;
                 };
-                Loader.prototype.start = function () {
-                    PIXI.loader.load();
-                };
-                Loader.prototype.onLoadProgress = function (loader, resource) {
-                    this.percent = loader.progress;
-                };
-                Loader.prototype.onLoadComplete = function (complete) {
-                    this.hasResources = false;
-                    this.app.state.loadComplete();
-                };
-                Loader.prototype.getResolutionBasedUrl = function (resource) {
-                    if (this.app.resolution === 2) {
-                        return resource.hdurl || resource.url;
+                SoundManager.prototype.play = function (id, marker) {
+                    if (marker === void 0) {
+                        marker = null;
                     }
-                    return resource.url;
+                    if (marker) {
+                        this.lookup[id].play(marker);
+                    } else {
+                        this.lookup[id].play();
+                    }
+                    return this.lookup[id];
                 };
-                Loader.getTextureById = function (atlasId, textureId) {
-                    return PIXI.loader.resources[atlasId].textures[textureId];
+                SoundManager.prototype.loop = function (id) {
+                    this.lookup[id].loop();
+                    return this.lookup[id];
                 };
-                return Loader;
+                SoundManager.prototype.pause = function (id, marker) {
+                    if (marker === void 0) {
+                        marker = null;
+                    }
+                    if (marker) {
+                        this.lookup[id].pause(marker);
+                    } else {
+                        this.lookup[id].pause();
+                    }
+                    return this.lookup[id];
+                };
+                SoundManager.prototype.setBgTrack = function (id) {
+                    this._bgTrack = this.play(id);
+                    return this._bgTrack;
+                };
+                SoundManager.prototype.crossFadeBGTrack = function (to, time) {
+                    if (time === void 0) {
+                        time = 300;
+                    }
+                    var oldBgTrack = this._bgTrack;
+                    this._bgTrack.fade(this._bgTrack.volume(), 0, time);
+                    this._bgTrack.on('fade', function (id) {
+                        oldBgTrack.stop();
+                    });
+                    var newBgTrack = this.play(to);
+                    newBgTrack.fade(0, newBgTrack.volume(), time);
+                    this._bgTrack = newBgTrack;
+                    return newBgTrack;
+                };
+                return SoundManager;
             }();
-            exports_1("Loader", Loader);
+            exports_1("SoundManager", SoundManager);
         }
     };
 });
-$__System.register('15', ['1e', '1b', '1c', '1d', '1f', '21'], function (exports_1, context_1) {
+$__System.register('13', ['1c', '19', '1a', '1b', '1d', '1e', '20'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -6827,13 +6912,18 @@ $__System.register('15', ['1e', '1b', '1c', '1d', '1f', '21'], function (exports
         }, function (Loader_1_1) {
             exports_1({
                 "Loader": Loader_1_1["Loader"],
-                "ILoaderResource": Loader_1_1["ILoaderResource"]
+                "ILoaderResource": Loader_1_1["ILoaderResource"],
+                "ISoundResource": Loader_1_1["ISoundResource"]
+            });
+        }, function (SoundManager_1_1) {
+            exports_1({
+                "SoundManager": SoundManager_1_1["SoundManager"]
             });
         }],
         execute: function () {}
     };
 });
-$__System.register('22', ['15'], function (exports_1, context_1) {
+$__System.register('21', ['13'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -6876,7 +6966,7 @@ $__System.register('22', ['15'], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('7', ['14', '16', '17', '18', '19', '1a', '22'], function (exports_1, context_1) {
+$__System.register('7', ['12', '14', '15', '16', '17', '18', '21'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -6913,7 +7003,7 @@ $__System.register('7', ['14', '16', '17', '18', '19', '1a', '22'], function (ex
         execute: function () {}
     };
 });
-$__System.register('23', ['8', 'a', '7'], function (exports_1, context_1) {
+$__System.register('22', ['8', 'a', '7'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -7014,7 +7104,7 @@ $__System.register('23', ['8', 'a', '7'], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('9', ['b', 'c', '23'], function (exports_1, context_1) {
+$__System.register('9', ['b', 'c', '22'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -7035,7 +7125,7 @@ $__System.register('9', ['b', 'c', '23'], function (exports_1, context_1) {
         execute: function () {}
     };
 });
-$__System.register('24', ['25'], function (exports_1, context_1) {
+$__System.register('23', ['24'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -7090,7 +7180,7 @@ $__System.register('24', ['25'], function (exports_1, context_1) {
         }
     };
 });
-$__System.register("26", ["27"], function (exports_1, context_1) {
+$__System.register("25", ["26"], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -7178,7 +7268,7 @@ $__System.register("26", ["27"], function (exports_1, context_1) {
         }
     };
 });
-$__System.register("25", ["27"], function (exports_1, context_1) {
+$__System.register("24", ["26"], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -7230,7 +7320,7 @@ $__System.register("25", ["27"], function (exports_1, context_1) {
         }
     };
 });
-$__System.register("28", [], function (exports_1, context_1) {
+$__System.register("27", [], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -7239,25 +7329,25 @@ $__System.register("28", [], function (exports_1, context_1) {
         setters: [],
         execute: function () {
             Notification = function () {
-                function Notification(_name, _body) {
-                    if (_body === void 0) {
-                        _body = null;
+                function Notification(name, body) {
+                    if (body === void 0) {
+                        body = null;
                     }
-                    this._name = _name;
-                    this._body = _body;
+                    this.name = name;
+                    this.body = body;
                 }
                 Notification.prototype.getName = function () {
-                    return this._name;
+                    return this.name;
                 };
                 Notification.prototype.setBody = function (body) {
-                    this._body = body;
+                    this.body = body;
                 };
                 Notification.prototype.getBody = function () {
-                    return this._body;
+                    return this.body;
                 };
                 Notification.prototype.destroy = function () {
-                    this._body = null;
-                    this._name = null;
+                    this.body = null;
+                    this.name = null;
                 };
                 return Notification;
             }();
@@ -7265,7 +7355,7 @@ $__System.register("28", [], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('27', ['20'], function (exports_1, context_1) {
+$__System.register('26', ['1f'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -7439,7 +7529,7 @@ $__System.register('27', ['20'], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('20', ['24', '26', '25', '28', '27'], function (exports_1, context_1) {
+$__System.register('1f', ['23', '25', '24', '27', '26'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -7468,7 +7558,7 @@ $__System.register('20', ['24', '26', '25', '28', '27'], function (exports_1, co
         execute: function () {}
     };
 });
-$__System.register("29", ["20"], function (exports_1, context_1) {
+$__System.register("28", ["1f"], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -7508,7 +7598,7 @@ $__System.register("29", ["20"], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('3', ['20', '29'], function (exports_1, context_1) {
+$__System.register('3', ['1f', '28'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -7574,7 +7664,7 @@ $__System.register('3', ['20', '29'], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('2a', [], function (exports_1, context_1) {
+$__System.register('29', [], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -7588,9 +7678,12 @@ $__System.register('2a', [], function (exports_1, context_1) {
                 Notifications.RECEIVED_GAMES_LIST = 'receivedGamesList';
                 Notifications.CONNECT_TO_GAME = 'connectToGame';
                 Notifications.CONNECTED_TO_GAME = 'connectedToGame';
+                Notifications.RESTART_GAME = 'restartGame';
                 Notifications.PLAYER_SWIPE = 'playerSwipe';
                 Notifications.PLAYER_START_GAME = 'playerStartGame';
+                Notifications.PLAYER_RESTART_GAME = 'playerRestartGame';
                 Notifications.START_GAME = 'startGame';
+                Notifications.GAME_OVER = 'gameOver';
                 Notifications.START_COUNTDOWN = 'startCountdown';
                 return Notifications;
             }();
@@ -7598,7 +7691,7 @@ $__System.register('2a', [], function (exports_1, context_1) {
         }
     };
 });
-$__System.register("4", ["2a"], function (exports_1, context_1) {
+$__System.register("4", ["29"], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -7611,7 +7704,7 @@ $__System.register("4", ["2a"], function (exports_1, context_1) {
         execute: function () {}
     };
 });
-$__System.register('2b', ['3', '4'], function (exports_1, context_1) {
+$__System.register('2a', ['3', '4'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -7638,7 +7731,7 @@ $__System.register('2b', ['3', '4'], function (exports_1, context_1) {
                 }
                 PlayMediator.prototype.onRegister = function () {};
                 PlayMediator.prototype.listNotificationInterests = function () {
-                    return [utils_1.Notifications.PLAYER_SWIPE, utils_1.Notifications.START_COUNTDOWN, utils_1.Notifications.START_GAME];
+                    return [utils_1.Notifications.PLAYER_SWIPE, utils_1.Notifications.START_COUNTDOWN, utils_1.Notifications.START_GAME, utils_1.Notifications.RESTART_GAME, utils_1.Notifications.GAME_OVER];
                 };
                 PlayMediator.prototype.handleNotification = function (note) {
                     var name = note.getName();
@@ -7649,6 +7742,12 @@ $__System.register('2b', ['3', '4'], function (exports_1, context_1) {
                         case utils_1.Notifications.START_COUNTDOWN:
                             this.controller.startCountdown();
                             break;
+                        case utils_1.Notifications.RESTART_GAME:
+                            this.controller.restartGame();
+                            break;
+                        case utils_1.Notifications.GAME_OVER:
+                            this.controller.gameOver();
+                            break;
                     }
                 };
                 PlayMediator.prototype.sendSwipe = function (percent) {
@@ -7656,6 +7755,9 @@ $__System.register('2b', ['3', '4'], function (exports_1, context_1) {
                 };
                 PlayMediator.prototype.sendStartGame = function () {
                     this.sendNotification(utils_1.Notifications.PLAYER_START_GAME);
+                };
+                PlayMediator.prototype.sendRestartGame = function () {
+                    this.sendNotification(utils_1.Notifications.PLAYER_RESTART_GAME);
                 };
                 Object.defineProperty(PlayMediator.prototype, "controller", {
                     get: function () {
@@ -7671,7 +7773,7 @@ $__System.register('2b', ['3', '4'], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('2c', ['8', '7', 'a', '9', '2b'], function (exports_1, context_1) {
+$__System.register('2b', ['8', '7', 'a', '9', '2a'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -7718,6 +7820,7 @@ $__System.register('2c', ['8', '7', 'a', '9', '2b'], function (exports_1, contex
                     this.countdown = this.app.ui.addChild(new ui_1.Countdown(0, 0, Play.COLOURS[this.mediator.playerNum - 1]));
                     if (this.mediator.playerNum === 1) {
                         this.addStartGameButton();
+                        this.addRestartGameButton();
                     }
                 };
                 Play.prototype.startCountdown = function () {
@@ -7728,6 +7831,12 @@ $__System.register('2c', ['8', '7', 'a', '9', '2b'], function (exports_1, contex
                             _this.start();
                         });
                     });
+                };
+                Play.prototype.restartGame = function () {};
+                Play.prototype.gameOver = function () {
+                    if (this.mediator.playerNum === 1) {
+                        this.showRestartGameButton();
+                    }
                 };
                 Play.prototype.start = function () {
                     this.countdown.hide();
@@ -7768,6 +7877,14 @@ $__System.register('2c', ['8', '7', 'a', '9', '2b'], function (exports_1, contex
                     startGameButton.on('mouseupoutside', this.onButtonReleaseOutside, this).on('touchendoutside', this.onButtonReleaseOutside, this);
                     this.startGameButton = startGameButton;
                 };
+                Play.prototype.addRestartGameButton = function () {
+                    var restartGameButton = this.add.existing(new ui_1.TextButton(-this.app.width, this.app.height * 0.5, 'NEW GAME', Play.COLOURS[this.mediator.playerNum - 1], true, this.app.width - 200));
+                    restartGameButton.interactive = true;
+                    restartGameButton.on('mousedown', this.onButtonPress, this).on('touchstart', this.onButtonPress, this);
+                    restartGameButton.on('mouseup', this.onButtonRelease, this).on('touchend', this.onButtonRelease, this);
+                    restartGameButton.on('mouseupoutside', this.onButtonReleaseOutside, this).on('touchendoutside', this.onButtonReleaseOutside, this);
+                    this.restartGameButton = restartGameButton;
+                };
                 Play.prototype.onButtonPress = function (e) {
                     var target = e.target,
                         btn = target;
@@ -7783,8 +7900,13 @@ $__System.register('2c', ['8', '7', 'a', '9', '2b'], function (exports_1, contex
                         return;
                     }
                     btn.up(true);
-                    this.mediator.sendStartGame();
-                    this.hideStartGameButton();
+                    if (btn === this.restartGameButton) {
+                        this.mediator.sendRestartGame();
+                        this.hideRestartGameButton();
+                    } else {
+                        this.mediator.sendStartGame();
+                        this.hideStartGameButton();
+                    }
                 };
                 Play.prototype.onButtonReleaseOutside = function (e) {
                     var target = e.target,
@@ -7797,6 +7919,13 @@ $__System.register('2c', ['8', '7', 'a', '9', '2b'], function (exports_1, contex
                 Play.prototype.hideStartGameButton = function () {
                     this.startGameButton.interactive = false;
                     utils_1.Animator.to(this.startGameButton, 0.4, { x: -500, ease: Back.easeIn });
+                };
+                Play.prototype.hideRestartGameButton = function () {
+                    this.restartGameButton.interactive = false;
+                    utils_1.Animator.to(this.restartGameButton, 0.4, { x: -500, ease: Back.easeIn });
+                };
+                Play.prototype.showRestartGameButton = function () {
+                    utils_1.Animator.to(this.restartGameButton, 0.4, { x: this.app.width * 0.5, ease: Back.easeOut });
                 };
                 Play.prototype.enableInputArea = function () {
                     this.inputArea.interactive = true;
@@ -7839,7 +7968,7 @@ $__System.register('2c', ['8', '7', 'a', '9', '2b'], function (exports_1, contex
         }
     };
 });
-$__System.register('2d', ['15', '2', '29', '6', '2c'], function (exports_1, context_1) {
+$__System.register('2c', ['13', '2', '28', '6', '2b'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -7885,7 +8014,7 @@ $__System.register('2d', ['15', '2', '29', '6', '2c'], function (exports_1, cont
         }
     };
 });
-$__System.register('2e', [], function (exports_1, context_1) {
+$__System.register('2d', [], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -7903,7 +8032,7 @@ $__System.register('2e', [], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('2f', [], function (exports_1, context_1) {
+$__System.register('2e', [], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -7985,7 +8114,7 @@ $__System.register('2f', [], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('30', [], function (exports_1, context_1) {
+$__System.register('2f', [], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -8005,13 +8134,42 @@ $__System.register('30', [], function (exports_1, context_1) {
                     url: 'assets/img/spritesheet/ui.json',
                     hdurl: 'assets/img/spritesheet/ui@2x.json'
                 };
+                Resources.SFX = {
+                    id: 'sfx',
+                    src: 'assets/audio/sprite/sfx',
+                    extensions: ['ogg', 'webm', 'm4a'],
+                    sprite: {
+                        "air_horn": [0, 2768.9795918367345],
+                        "banana_peel_slip": [5000, 517.8004535147389],
+                        "fruit_collected": [8000, 1018.1179138321994],
+                        "meow_cat": [12000, 1251.7233560090694],
+                        "meow_kitten": [16000, 5000],
+                        "ship_bell": [23000, 3745.6689342403633],
+                        "slurp": [29000, 2914.195011337867],
+                        "slurping_2": [34000, 1212.2902494331101],
+                        "straw_slurp": [38000, 10193.560090702946],
+                        "tomcat": [51000, 1978.979591836733]
+                    }
+                };
+                Resources.MUSIC_SPLASH = {
+                    id: 'music_splash',
+                    src: 'assets/audio/sound/music_pinball.ogg',
+                    volume: 0.4,
+                    loop: true
+                };
+                Resources.MUSIC_GAME = {
+                    id: 'music_game',
+                    src: 'assets/audio/sound/music_pinball_2.ogg',
+                    volume: 0.3,
+                    loop: true
+                };
                 return Resources;
             }();
             exports_1("Resources", Resources);
         }
     };
 });
-$__System.register('a', ['2e', '2f', '30'], function (exports_1, context_1) {
+$__System.register('a', ['2d', '2e', '2f'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -8033,7 +8191,7 @@ $__System.register('a', ['2e', '2f', '30'], function (exports_1, context_1) {
     };
 });
 /// <reference path="../../typings/index.d.ts" />
-$__System.register('1', ['2d', 'a'], function (exports_1, context_1) {
+$__System.register('1', ['2c', 'a'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;

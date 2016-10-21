@@ -1,10 +1,10 @@
 import io from 'socket.io-client';
-import {Time} from 'bolt/utils';
-import {INotification} from 'bolt/interfaces';
+import { Time } from 'bolt/utils';
+import { INotification } from 'bolt/interfaces';
 
-import {KDGame} from 'game/KDGame';
-import {BaseMediator} from 'game/mediator/BaseMediator';
-import {Notifications} from 'game/utils';
+import { KDGame } from 'game/KDGame';
+import { BaseMediator } from 'game/mediator/BaseMediator';
+import { Notifications } from 'game/utils';
 
 export class ApplicationMediator extends BaseMediator {
     public static MEDIATOR_NAME: string = 'ApplicationMediator';
@@ -13,12 +13,14 @@ export class ApplicationMediator extends BaseMediator {
     public onRegister(): void {
         this.socket = io.connect('https://meow-meltdown.herokuapp.com');
         // this.socket = io.connect('http://localost:4000');
-        
+
         // events to handle
         this.socket.on('game_connected', (event) => { this.handleSocketEvent('game_connected', event) });
         this.socket.on('player_connected', (event) => { this.handleSocketEvent('player_connected', event) });
+        this.socket.on('player_start_game', (event) => { this.handleSocketEvent('player_start_game', event) });
         this.socket.on('player_swipe', (event) => { this.handleSocketEvent('player_swipe', event) });
         this.socket.on('start_game', (event) => { this.handleSocketEvent('start_game', event) });
+        this.socket.on('restart_game', (event) => { this.handleSocketEvent('restart_game', event) });
         this.socket.on('start_countdown', (event) => { this.handleSocketEvent('start_countdown', event) });
 
         // connect game
@@ -27,7 +29,8 @@ export class ApplicationMediator extends BaseMediator {
 
     public listNotificationInterests(): string[] {
         return [
-            Notifications.INIT_COUNTDOWN
+            Notifications.INIT_COUNTDOWN,
+            Notifications.GAME_OVER
         ]
     }
 
@@ -38,6 +41,9 @@ export class ApplicationMediator extends BaseMediator {
         switch (name) {
             case Notifications.INIT_COUNTDOWN:
                 this.socket.emit('init_countdown');
+                break;
+            case Notifications.GAME_OVER:
+                this.socket.emit('game_over');
                 break;
         }
     }
@@ -53,11 +59,17 @@ export class ApplicationMediator extends BaseMediator {
                 this.appModel.numPlayers = event.player;
                 this.sendNotification(Notifications.PLAYER_CONNECTED, event.player);
                 break;
+            case 'player_start_game':
+                this.sendNotification(Notifications.PLAYER_START_GAME);
+                break;
             case 'player_swipe':
                 this.sendNotification(Notifications.PLAYER_SWIPE, { playerNum: event.player, percent: event.percent });
                 break;
             case 'start_game':
                 this.sendNotification(Notifications.START_GAME);
+                break;
+            case 'restart_game':
+                this.sendNotification(Notifications.RESTART_GAME);
                 break;
             case 'start_countdown':
                 this.sendNotification(Notifications.START_COUNTDOWN);

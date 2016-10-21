@@ -1,8 +1,8 @@
-import {INotification} from 'bolt/interfaces';
+import { INotification } from 'bolt/interfaces';
 
-import {BaseMediator} from 'game/mediator/BaseMediator';
-import {Play} from 'game/state/Play';
-import {Notifications} from 'game/utils';
+import { BaseMediator } from 'game/mediator/BaseMediator';
+import { Play } from 'game/state/Play';
+import { Notifications } from 'game/utils';
 
 export class PlayMediator extends BaseMediator {
     public static MEDIATOR_NAME: string = 'PlayMediator';
@@ -13,7 +13,8 @@ export class PlayMediator extends BaseMediator {
         return [
             Notifications.GAME_CONNECTED,
             Notifications.START_COUNTDOWN,
-            Notifications.PLAYER_SWIPE
+            Notifications.PLAYER_SWIPE,
+            Notifications.RESTART_GAME
         ]
     }
 
@@ -23,15 +24,22 @@ export class PlayMediator extends BaseMediator {
 
         switch (name) {
             case Notifications.PLAYER_SWIPE:
-                this.game.inputSwipe(body.playerNum, body.percent); 
+                this.game.inputSwipe(body.playerNum, body.percent);
                 break;
             case Notifications.START_COUNTDOWN:
                 this.game.startCountdown();
                 break;
+            case Notifications.RESTART_GAME:
+                this.game.restartGame();
+                break;
         }
     }
 
-    public sendInitCountdown():void{
+    public gameOver():void{
+        this.sendNotification(Notifications.GAME_OVER);
+    }
+
+    public sendInitCountdown(): void {
         this.sendNotification(Notifications.INIT_COUNTDOWN);
     }
 

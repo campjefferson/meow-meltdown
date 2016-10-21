@@ -55,6 +55,13 @@ export class IceCream extends Container {
         this.remainingPieces = this.stack.length;
     }
 
+    public reset():void{
+        this.stack.forEach((piece)=>{
+            this.removeChild(piece);
+        });
+        this.build();
+    }
+
     protected animateDrop(): void {
         Animator.to(this, 0.2, { y: "+=25", ease: Sine.easeIn })
     }

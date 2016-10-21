@@ -1,10 +1,10 @@
-import {Animation} from 'lightning/utils';
-import {Animator, Time} from 'bolt/utils';
-import {Container, Sprite, MovieClip, TileSprite} from 'lightning/display';
+import { Animation } from 'lightning/utils';
+import { Animator, Time } from 'bolt/utils';
+import { Container, Sprite, MovieClip, TileSprite } from 'lightning/display';
 
-import {Resources} from 'common/utils';
-import {Ribbon} from 'common/ui';
-import {IceCream} from 'game/gameobjects/IceCream';
+import { Resources } from 'common/utils';
+import { Ribbon } from 'common/ui';
+import { IceCream } from 'game/gameobjects/IceCream';
 
 
 export type CatColor = "pink" | "blue" | "green" | "orange";
@@ -44,7 +44,7 @@ export class Cat extends Container {
         this.neck = this.addChild(new TileSprite(46, 208 + Cat.DEFAULT_NECK_HEIGHT, atlasId, this.color + '/' + 'neck_tile.png', 81.5, Cat.DEFAULT_NECK_HEIGHT)) as TileSprite;
         this.neck.anchor.set(0, 1);
 
-        this.iceCream = this.addChild(new IceCream(262, 148, this.color, Cat.EXTENDED_NECK_HEIGHT)) as IceCream;
+        this.iceCream = this.addChild(new IceCream(262, 148, this.color, Cat.DEFAULT_NECK_HEIGHT)) as IceCream;
         this.head = this.addChild(new Sprite(93, 186, atlasId, this.color + '/' + 'head.png')) as Sprite;
 
         this.tongue = this.head.addChild(new MovieClip(143, 54, Animation.generateFrames('tongue_', 0, 3))) as MovieClip;
@@ -94,7 +94,7 @@ export class Cat extends Container {
 
         this.lickEnabled = false;
         const dist = Cat.EXTENDED_NECK_HEIGHT * (lickpercent * 0.01);
-        const time = dist / 1200;
+        const time = dist / 2000;
 
         this.tongue.gotoAndStop(2);
         Animator.to(this.neck, time, { height: dist, ease: Sine.easeOut });
@@ -127,5 +127,13 @@ export class Cat extends Container {
                 this.finished = true;
             });
         }
+    }
+
+    public reset(): void {
+        this.canWin = true;
+        this.lickEnabled = true;
+        this.finished = false;
+
+        this.iceCream.reset();
     }
 }

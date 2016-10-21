@@ -1,11 +1,11 @@
-import {State, Text, Sprite} from 'lightning/display';
-import {Animation} from 'lightning/utils';
-import {Time, Animator} from 'bolt/utils';
+import { State, Text, Sprite } from 'lightning/display';
+import { Animation } from 'lightning/utils';
+import { Time, Animator } from 'bolt/utils';
 
-import {Fonts, Resources, Colours} from 'common/utils';
-import {Ribbon, Countdown} from 'common/ui';
-import {Cat} from 'game/gameobjects/Cat';
-import {PlayMediator} from 'game/mediator/PlayMediator';
+import { Fonts, Resources, Colours } from 'common/utils';
+import { Ribbon, Countdown } from 'common/ui';
+import { Cat } from 'game/gameobjects/Cat';
+import { PlayMediator } from 'game/mediator/PlayMediator';
 
 export class Play extends State {
     private static PLAYER_COLORS: ('pink' | 'blue' | 'green' | 'orange')[] = ['pink', 'blue', 'green', 'orange'];
@@ -25,11 +25,6 @@ export class Play extends State {
     public player2Bg: Sprite;
     public player3Bg: Sprite;
     public player4Bg: Sprite;
-
-    public player1Ribbon: Ribbon;
-    public player2Ribbon: Ribbon;
-    public player3Ribbon: Ribbon;
-    public player4Ribbon: Ribbon;
 
     public countdown: Countdown;
     public winner: number = 0;
@@ -56,6 +51,19 @@ export class Play extends State {
 
         Animator.staggerFrom(this.bgs, 0.6, { x: this.app.width, ease: Sine.easeOut, delay: 0.6 }, 0.2);
         Animator.staggerFrom(this.players, 0.6, { y: this.app.height * 2, ease: Sine.easeOut, delay: 1.2 }, 0.2);
+
+        Time.wait(3).then(() => {
+            this.mediator.sendInitCountdown();
+        });
+
+        this.app.sound.crossFadeBGTrack(Resources.MUSIC_GAME.id);
+    }
+
+    public restartGame(): void {
+        this.hasWinner = false;
+        for (let i = 0; i < this.numPlayers; i++) {
+            this.players[i].reset();
+        }
 
         Time.wait(3).then(() => {
             this.mediator.sendInitCountdown();
@@ -106,7 +114,7 @@ export class Play extends State {
 
     public inputSwipe(playerNum: number, percent: number): void {
         this.players[playerNum - 1].lick(percent);
-        this.app.sound.play('sfx', Play.SLURP_SOUNDS[Math.floor(Math.random() * 3)]);
+        //this.app.sound.play('sfx', Play.SLURP_SOUNDS[Math.floor(Math.random() * 3)]);
     }
 
     public update(): void {
@@ -115,7 +123,7 @@ export class Play extends State {
         if (!this.hasWinner && this.winner === this.numPlayers) {
             // game over
             this.hasWinner = true;
-            console.log('game over');
+            this.mediator.gameOver();
         }
     }
 
@@ -134,6 +142,7 @@ export class Play extends State {
                 this.app.sound.play('sfx', 'fruit_collected');
             }
         }
+
     }
 
     public shutdown(): void {

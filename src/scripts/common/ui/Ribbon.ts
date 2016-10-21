@@ -1,7 +1,7 @@
-import {Animator} from 'bolt/utils';
-import {Colours, Resources, Fonts} from 'common/utils';
-import {Container, Text, Sprite} from 'lightning/display';
-import {CatColor} from 'game/gameobjects/Cat';
+import { Animator } from 'bolt/utils';
+import { Colours, Resources, Fonts } from 'common/utils';
+import { Container, Text, Sprite } from 'lightning/display';
+import { CatColor } from 'game/gameobjects/Cat';
 
 export class Ribbon extends Container {
     private bg: Sprite;
@@ -64,5 +64,9 @@ export class Ribbon extends Container {
 
     public show(): void {
         Animator.to(this.scale, .3, { x: 1, y: 1, ease: Back.easeOut });
+    }
+
+    public hide(): void {
+        Animator.to(this.scale, .3, { x: 0, y: 0, ease: Back.easeIn });
     }
 }
