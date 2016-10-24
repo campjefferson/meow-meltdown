@@ -8129,7 +8129,7 @@ $__System.register('60', ['5e', '5a', '57', '58', '5f'], function (exports_1, co
                     this.iceCream.reset();
                 };
                 Cat.DEFAULT_NECK_HEIGHT = 1;
-                Cat.EXTENDED_NECK_HEIGHT = 800;
+                Cat.EXTENDED_NECK_HEIGHT = 650;
                 return Cat;
             }(display_1.Container);
             exports_1("Cat", Cat);

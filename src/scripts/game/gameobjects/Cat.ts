@@ -11,7 +11,7 @@ export type CatColor = "pink" | "blue" | "green" | "orange";
 
 export class Cat extends Container {
     public static DEFAULT_NECK_HEIGHT: number = 1;
-    public static EXTENDED_NECK_HEIGHT: number = 800;
+    public static EXTENDED_NECK_HEIGHT: number = 650;
 
     public eye: Sprite;
     public tongue: MovieClip;
