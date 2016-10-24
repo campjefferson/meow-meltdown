@@ -7806,6 +7806,8 @@ $__System.register('2b', ['8', '7', 'a', '9', '2a'], function (exports_1, contex
                     this.listContainer = null;
                     this.tongueInterval = 0;
                     this.isSwiping = false;
+                    this.startButtonPressed = false;
+                    this.restartButtonPressed = false;
                 }
                 Play.prototype.init = function () {
                     console.log('controller init!');
@@ -7832,7 +7834,9 @@ $__System.register('2b', ['8', '7', 'a', '9', '2a'], function (exports_1, contex
                         });
                     });
                 };
-                Play.prototype.restartGame = function () {};
+                Play.prototype.restartGame = function () {
+                    this.startButtonPressed = this.restartButtonPressed = false;
+                };
                 Play.prototype.gameOver = function () {
                     if (this.mediator.playerNum === 1) {
                         this.showRestartGameButton();
@@ -7901,11 +7905,19 @@ $__System.register('2b', ['8', '7', 'a', '9', '2a'], function (exports_1, contex
                     }
                     btn.up(true);
                     if (btn === this.restartGameButton) {
+                        if (this.restartButtonPressed) {
+                            return;
+                        }
                         this.mediator.sendRestartGame();
                         this.hideRestartGameButton();
+                        this.restartButtonPressed = true;
                     } else {
+                        if (this.startButtonPressed) {
+                            return;
+                        }
                         this.mediator.sendStartGame();
                         this.hideStartGameButton();
+                        this.startButtonPressed = true;
                     }
                 };
                 Play.prototype.onButtonReleaseOutside = function (e) {

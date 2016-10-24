@@ -28,6 +28,9 @@ export class Play extends State {
     private inputData: PIXI.interaction.InteractionData;
     public countdown: Countdown;
 
+    private startButtonPressed = false;
+    private restartButtonPressed = false;
+
     public init(): void {
         console.log('controller init!');
         this.mediator = new PlayMediator(this);
@@ -59,7 +62,7 @@ export class Play extends State {
     }
 
     public restartGame(): void {
-
+        this.startButtonPressed = this.restartButtonPressed = false;
     }
 
     public gameOver(): void {
@@ -153,11 +156,19 @@ export class Play extends State {
         }
         btn.up(true);
         if (btn === this.restartGameButton) {
+            if (this.restartButtonPressed) {
+                return;
+            }
             this.mediator.sendRestartGame();
             this.hideRestartGameButton();
+            this.restartButtonPressed = true;
         } else {
+            if (this.startButtonPressed) {
+                return;
+            }
             this.mediator.sendStartGame();
             this.hideStartGameButton();
+            this.startButtonPressed = true;
         }
 
     }
